@@ -144,14 +144,14 @@ fun ParcelDeliveryScreen(
             item {
                 Glass3DCard(cornerRadius = 22.dp) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text("Pickup & Drop Details", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                        Text("Pickup & Drop Details", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         OutlinedTextField(
                             value = pickup,
                             onValueChange = { pickup = it },
                             label = { Text("Pickup Address") },
                             leadingIcon = { Icon(Icons.Default.MyLocation, null, tint = SkyBlue) },
                             singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = PureWhite, unfocusedContainerColor = PureWhite),
+                            colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colorScheme.surface, unfocusedContainerColor = MaterialTheme.colorScheme.surface),
                             modifier = Modifier.fillMaxWidth()
                         )
                         OutlinedTextField(
@@ -160,7 +160,7 @@ fun ParcelDeliveryScreen(
                             label = { Text("Drop Address") },
                             leadingIcon = { Icon(Icons.Default.LocationOn, null, tint = PremiumPink) },
                             singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = PureWhite, unfocusedContainerColor = PureWhite),
+                            colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colorScheme.surface, unfocusedContainerColor = MaterialTheme.colorScheme.surface),
                             modifier = Modifier.fillMaxWidth()
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -202,7 +202,7 @@ fun ParcelDeliveryScreen(
             item {
                 Glass3DCard(cornerRadius = 22.dp) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text("Parcel Category & Specs", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                        Text("Parcel Category & Specs", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             items(DemoDataSeeder.parcelCategories) { cat ->
                                 GlassChip(
@@ -336,7 +336,7 @@ fun GoodsTransportScreen(
             item {
                 Glass3DCard(cornerRadius = 22.dp) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text("Route & Cargo Info", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                        Text("Route & Cargo Info", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         OutlinedTextField(
                             value = pickup,
                             onValueChange = { pickup = it },
@@ -381,7 +381,7 @@ fun GoodsTransportScreen(
             }
 
             item {
-                Text("Select Commercial Vehicle (6 Fleet Options)", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                Text("Select Commercial Vehicle (6 Fleet Options)", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
             }
 
             items(DemoDataSeeder.transportVehicles, key = { it.id }) { vehicle ->
@@ -389,7 +389,7 @@ fun GoodsTransportScreen(
                 val est = (vehicle.baseFare + 10 * vehicle.perKmRate)
                 Glass3DCard(
                     cornerRadius = 20.dp,
-                    containerColor = if (isSelected) PaleSky else GlassWhiteHigh,
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else null,
                     onClick = { selectedVehicle = vehicle },
                     modifier = Modifier.testTag("transport_vehicle_${vehicle.id}")
                 ) {
@@ -409,12 +409,12 @@ fun GoodsTransportScreen(
                         Spacer(Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Text(vehicle.name, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text(vehicle.name, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 StatusPill(vehicle.badge, if (isSelected) PremiumPink else SkyBlue)
                             }
-                            Text(vehicle.subtitle, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                            Text(vehicle.subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        Text("₹$est", style = MaterialTheme.typography.titleLarge, color = DarkNavy, fontWeight = FontWeight.ExtraBold)
+                        Text("₹$est", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold)
                     }
                 }
             }
@@ -423,13 +423,13 @@ fun GoodsTransportScreen(
             item {
                 Glass3DCard(cornerRadius = 22.dp) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text("Loading Assistance & Scheduling", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                        Text("Loading Assistance & Scheduling", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Loading Assistance (+₹120)", style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                            Text("Loading Assistance (+₹120)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                             Switch(checked = loadingAssist, onCheckedChange = { loadingAssist = it })
                         }
                         Row(
@@ -437,7 +437,7 @@ fun GoodsTransportScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Unloading Assistance (+₹120)", style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                            Text("Unloading Assistance (+₹120)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                             Switch(checked = unloadingAssist, onCheckedChange = { unloadingAssist = it })
                         }
                         Row(
@@ -445,12 +445,12 @@ fun GoodsTransportScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Number of Helpers (₹150 each)", style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                            Text("Number of Helpers (₹150 each)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 IconButton(onClick = { helpersCount = (helpersCount - 1).coerceAtLeast(0) }) {
                                     Icon(Icons.Default.Remove, "Decrease helpers")
                                 }
-                                Text("$helpersCount", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text("$helpersCount", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 IconButton(onClick = { helpersCount = (helpersCount + 1).coerceAtMost(4) }) {
                                     Icon(Icons.Default.Add, "Increase helpers")
                                 }
@@ -465,8 +465,8 @@ fun GoodsTransportScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Vehicle Fare: ₹${fareBreakdown.first}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
-                            Text("Helpers & Load: ₹${fareBreakdown.second}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                            Text("Vehicle Fare: ₹${fareBreakdown.first}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("Helpers & Load: ₹${fareBreakdown.second}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             StatusPill("Total ₹${fareBreakdown.third}", EmeraldSuccess)
                         }
                     }

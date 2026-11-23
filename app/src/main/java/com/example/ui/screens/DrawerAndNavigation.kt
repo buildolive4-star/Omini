@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.BusinessCenter
 import androidx.compose.material.icons.filled.ConfirmationNumber
 import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Fastfood
@@ -44,6 +45,7 @@ import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
@@ -82,12 +84,19 @@ import com.example.R
 import com.example.data.AppRoute
 import com.example.data.CustomerSection
 import com.example.data.UserRole
+import com.example.ui.theme.CyberCyan
 import com.example.ui.theme.DarkNavy
+import com.example.ui.theme.ElectricPink
 import com.example.ui.theme.EmeraldSuccess
+import com.example.ui.theme.GlassDarkHigh
 import com.example.ui.theme.GlassWhiteHigh
 import com.example.ui.theme.LightPink
 import com.example.ui.theme.LightSkyBlue
+import com.example.ui.theme.LocalIsDarkGlass
+import com.example.ui.theme.MutedLightBlue
 import com.example.ui.theme.MutedNavy
+import com.example.ui.theme.NavyGlowBrush
+import com.example.ui.theme.ObsidianNavy
 import com.example.ui.theme.PalePink
 import com.example.ui.theme.PaleSky
 import com.example.ui.theme.PremiumPink
@@ -110,105 +119,62 @@ private data class DrawerMenuItem(
 fun SkyPulseGlassDrawer(
     state: SuperAppUiState,
     onNavigate: (AppRoute) -> Unit,
+    onToggleTheme: () -> Unit,
     onLogout: () -> Unit,
     onCloseDrawer: () -> Unit
 ) {
+    val isDark = LocalIsDarkGlass.current
+
     val customerItems = listOf(
-        DrawerMenuItem(1, "Home", Icons.Default.Home, null, null, "drawer_home") {
-            onNavigate(AppRoute.Home)
-        },
-        DrawerMenuItem(2, "My Profile", Icons.Default.Person, null, null, "drawer_profile") {
-            onNavigate(AppRoute.Profile)
-        },
-        DrawerMenuItem(3, "My Rides", Icons.Default.DirectionsCar, null, null, "drawer_rides") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_RIDES))
-        },
-        DrawerMenuItem(4, "My Food Orders", Icons.Default.Fastfood, null, null, "drawer_food") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_FOOD_ORDERS))
-        },
-        DrawerMenuItem(5, "My Grocery Orders", Icons.Default.ShoppingBasket, null, null, "drawer_grocery") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_GROCERY_ORDERS))
-        },
-        DrawerMenuItem(6, "My Parcel Bookings", Icons.Default.Inventory2, null, null, "drawer_parcel") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_PARCEL_BOOKINGS))
-        },
-        DrawerMenuItem(7, "My Transport Bookings", Icons.Default.LocalShipping, null, null, "drawer_transport") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_TRANSPORT_BOOKINGS))
-        },
-        DrawerMenuItem(8, "My Wallet", Icons.Default.AccountBalanceWallet, "₹${state.walletBalance}", null, "drawer_wallet") {
-            onNavigate(AppRoute.Wallet)
-        },
-        DrawerMenuItem(9, "My Payments", Icons.Default.CreditCard, null, null, "drawer_payments") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_PAYMENTS))
-        },
-        DrawerMenuItem(10, "My Coupons", Icons.Default.ConfirmationNumber, "${state.coupons.size}", null, "drawer_coupons") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_COUPONS))
-        },
-        DrawerMenuItem(11, "My Addresses", Icons.Default.LocationOn, null, null, "drawer_addresses") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_ADDRESSES))
-        },
-        DrawerMenuItem(12, "My Favourite", Icons.Default.Favorite, null, null, "drawer_favourite") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_FAVOURITES))
-        },
-        DrawerMenuItem(13, "My Reviews", Icons.Default.Star, null, null, "drawer_reviews") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_REVIEWS))
-        },
-        DrawerMenuItem(14, "Help & Support", Icons.AutoMirrored.Filled.HelpOutline, "AI", null, "drawer_support") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.HELP_SUPPORT))
-        },
-        DrawerMenuItem(15, "Settings", Icons.Default.Settings, null, null, "drawer_settings") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.SETTINGS))
-        },
-        DrawerMenuItem(16, "Logout", Icons.AutoMirrored.Filled.ExitToApp, null, null, "drawer_logout") {
-            onLogout()
-        }
+        DrawerMenuItem(1, "Home", Icons.Default.Home, null, null, "drawer_home") { onNavigate(AppRoute.Home) },
+        DrawerMenuItem(2, "My Profile", Icons.Default.Person, null, null, "drawer_profile") { onNavigate(AppRoute.Profile) },
+        DrawerMenuItem(3, "My Rides", Icons.Default.DirectionsCar, null, null, "drawer_rides") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_RIDES)) },
+        DrawerMenuItem(4, "My Food Orders", Icons.Default.Fastfood, null, null, "drawer_food") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_FOOD_ORDERS)) },
+        DrawerMenuItem(5, "My Grocery Orders", Icons.Default.ShoppingBasket, null, null, "drawer_grocery") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_GROCERY_ORDERS)) },
+        DrawerMenuItem(6, "My Parcel Bookings", Icons.Default.Inventory2, null, null, "drawer_parcel") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_PARCEL_BOOKINGS)) },
+        DrawerMenuItem(7, "My Transport Bookings", Icons.Default.LocalShipping, null, null, "drawer_transport") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_TRANSPORT_BOOKINGS)) },
+        DrawerMenuItem(8, "My Wallet", Icons.Default.AccountBalanceWallet, "₹${state.walletBalance}", null, "drawer_wallet") { onNavigate(AppRoute.Wallet) },
+        DrawerMenuItem(9, "My Payments", Icons.Default.CreditCard, null, null, "drawer_payments") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_PAYMENTS)) },
+        DrawerMenuItem(10, "My Coupons", Icons.Default.ConfirmationNumber, "${state.coupons.size}", null, "drawer_coupons") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_COUPONS)) },
+        DrawerMenuItem(11, "My Addresses", Icons.Default.LocationOn, null, null, "drawer_addresses") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_ADDRESSES)) },
+        DrawerMenuItem(12, "My Favourite", Icons.Default.Favorite, null, null, "drawer_favourite") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_FAVOURITES)) },
+        DrawerMenuItem(13, "My Reviews", Icons.Default.Star, null, null, "drawer_reviews") { onNavigate(AppRoute.CustomerDetail(CustomerSection.MY_REVIEWS)) },
+        DrawerMenuItem(14, "Help & Support", Icons.AutoMirrored.Filled.HelpOutline, "AI", null, "drawer_support") { onNavigate(AppRoute.CustomerDetail(CustomerSection.HELP_SUPPORT)) },
+        DrawerMenuItem(15, "Settings", Icons.Default.Settings, null, null, "drawer_settings") { onNavigate(AppRoute.CustomerDetail(CustomerSection.SETTINGS)) },
+        DrawerMenuItem(16, "Logout", Icons.AutoMirrored.Filled.ExitToApp, null, null, "drawer_logout") { onLogout() }
     )
 
     val otherPanels = listOf(
-        DrawerMenuItem(17, "Become a Driver / Delivery Partner", Icons.Default.TwoWheeler, "KYC", null, "drawer_become_partner") {
-            onNavigate(AppRoute.PartnerRegistration)
-        },
-        DrawerMenuItem(18, "Partner Dashboard", Icons.Default.Dashboard, "LIVE", UserRole.DRIVER_PARTNER, "drawer_partner_dashboard") {
-            onNavigate(AppRoute.PartnerDashboard)
-        },
-        DrawerMenuItem(19, "Restaurant Owner Panel", Icons.Default.Restaurant, "PRO", UserRole.RESTAURANT_OWNER, "drawer_restaurant_panel") {
-            onNavigate(AppRoute.RestaurantPanel)
-        },
-        DrawerMenuItem(20, "Grocery Store Owner Panel", Icons.Default.Storefront, "PRO", UserRole.GROCERY_OWNER, "drawer_shop_panel") {
-            onNavigate(AppRoute.ShopPanel)
-        },
-        DrawerMenuItem(21, "Business Dashboard", Icons.Default.BusinessCenter, "B2B", UserRole.BUSINESS_ACCOUNT, "drawer_business_panel") {
-            onNavigate(AppRoute.CustomerDetail(CustomerSection.BUSINESS_DASHBOARD))
-        },
-        DrawerMenuItem(22, "Admin Login", Icons.Default.AdminPanelSettings, "AUTH", UserRole.ADMIN, "drawer_admin_panel") {
-            onNavigate(AppRoute.AdminPanel)
-        }
+        DrawerMenuItem(17, "Become a Driver / Delivery Partner", Icons.Default.TwoWheeler, "KYC", null, "drawer_become_partner") { onNavigate(AppRoute.PartnerRegistration) },
+        DrawerMenuItem(18, "Partner Dashboard", Icons.Default.Dashboard, "LIVE", UserRole.DRIVER_PARTNER, "drawer_partner_dashboard") { onNavigate(AppRoute.PartnerDashboard) },
+        DrawerMenuItem(19, "Restaurant Owner Panel", Icons.Default.Restaurant, "PRO", UserRole.RESTAURANT_OWNER, "drawer_restaurant_panel") { onNavigate(AppRoute.RestaurantPanel) },
+        DrawerMenuItem(20, "Grocery Store Owner Panel", Icons.Default.Storefront, "PRO", UserRole.GROCERY_OWNER, "drawer_shop_panel") { onNavigate(AppRoute.ShopPanel) },
+        DrawerMenuItem(21, "Business Dashboard", Icons.Default.BusinessCenter, "B2B", UserRole.BUSINESS_ACCOUNT, "drawer_business_panel") { onNavigate(AppRoute.CustomerDetail(CustomerSection.BUSINESS_DASHBOARD)) },
+        DrawerMenuItem(22, "Admin Login", Icons.Default.AdminPanelSettings, "AUTH", UserRole.ADMIN, "drawer_admin_panel") { onNavigate(AppRoute.AdminPanel) }
     )
+
+    val drawerGradient = if (isDark) {
+        Brush.verticalGradient(listOf(Color(0xF5070E24), Color(0xF5111D42), Color(0xF526113E)))
+    } else {
+        Brush.verticalGradient(listOf(Color(0xF7DCF2FF), Color(0xF7FFFFFF), Color(0xF7FFEAF5)))
+    }
 
     ModalDrawerSheet(
         drawerContainerColor = Color.Transparent,
         modifier = Modifier
-            .width(326.dp)
+            .width(332.dp)
             .fillMaxHeight()
             .testTag("navigation_drawer")
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(topEnd = 30.dp, bottomEnd = 30.dp))
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xF5E0F2FE),
-                            Color(0xF5FFFFFF),
-                            Color(0xF5FCE7F3)
-                        )
-                    )
-                )
+                .clip(RoundedCornerShape(topEnd = 32.dp, bottomEnd = 32.dp))
+                .background(drawerGradient)
                 .border(
-                    width = 1.5.dp,
+                    width = 1.6.dp,
                     brush = SkyToPinkBrush,
-                    shape = RoundedCornerShape(topEnd = 30.dp, bottomEnd = 30.dp)
+                    shape = RoundedCornerShape(topEnd = 32.dp, bottomEnd = 32.dp)
                 )
         ) {
             LazyColumn(
@@ -217,28 +183,29 @@ fun SkyPulseGlassDrawer(
                     .statusBarsPadding()
                     .navigationBarsPadding()
                     .padding(horizontal = 14.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 item {
-                    // Drawer 3D Glass Header
+                    // Ultra-3D Luminous Drawer Hero Header
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(Brush.linearGradient(listOf(DarkNavy, Color(0xFF1E3A8A), Color(0xFF701A75))))
-                            .border(1.dp, PureWhite.copy(alpha = 0.35f), RoundedCornerShape(24.dp))
+                            .shadow(14.dp, RoundedCornerShape(26.dp), spotColor = ElectricPink, ambientColor = SkyBlue)
+                            .clip(RoundedCornerShape(26.dp))
+                            .background(NavyGlowBrush)
+                            .border(1.4.dp, SkyToPinkBrush, RoundedCornerShape(26.dp))
                             .padding(16.dp)
                     ) {
-                        Column {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(id = R.drawable.img_app_icon_fg),
                                     contentDescription = "SkyPulse Logo",
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(RoundedCornerShape(14.dp))
-                                        .border(1.5.dp, SkyBlue, RoundedCornerShape(14.dp))
+                                        .size(50.dp)
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .border(1.5.dp, CyberCyan, RoundedCornerShape(16.dp))
                                 )
                                 Spacer(Modifier.width(12.dp))
                                 Column(modifier = Modifier.weight(1f)) {
@@ -250,46 +217,72 @@ fun SkyPulseGlassDrawer(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        text = "Active Role: ${state.activeRole.title}",
+                                        text = "Role: ${state.activeRole.title}",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = LightSkyBlue
                                     )
                                 }
                             }
-                            Spacer(Modifier.height(12.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Surface(
                                     shape = RoundedCornerShape(50),
-                                    color = SkyBlue.copy(alpha = 0.25f),
+                                    color = SkyBlue.copy(alpha = 0.24f),
+                                    border = BorderStroke(1.dp, SkyBlue.copy(alpha = 0.6f)),
                                     modifier = Modifier.clickable {
                                         onCloseDrawer()
                                         onNavigate(AppRoute.CustomerDetail(CustomerSection.FAMILY_ACCOUNT))
                                     }
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(Icons.Default.Groups, null, tint = PureWhite, modifier = Modifier.size(14.dp))
                                         Spacer(Modifier.width(4.dp))
-                                        Text("Family (${state.familyMembers.size})", style = MaterialTheme.typography.labelSmall, color = PureWhite)
+                                        Text("Family", style = MaterialTheme.typography.labelSmall, color = PureWhite, fontWeight = FontWeight.Bold)
                                     }
                                 }
                                 Surface(
                                     shape = RoundedCornerShape(50),
-                                    color = PremiumPink.copy(alpha = 0.3f),
+                                    color = ElectricPink.copy(alpha = 0.30f),
+                                    border = BorderStroke(1.dp, LightPink.copy(alpha = 0.6f)),
                                     modifier = Modifier.clickable {
                                         onCloseDrawer()
                                         onNavigate(AppRoute.AiAssistant)
                                     }
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(Icons.Default.AutoAwesome, null, tint = PureWhite, modifier = Modifier.size(14.dp))
                                         Spacer(Modifier.width(4.dp))
-                                        Text("Gemini AI", style = MaterialTheme.typography.labelSmall, color = PureWhite)
+                                        Text("Gemini AI", style = MaterialTheme.typography.labelSmall, color = PureWhite, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                                Surface(
+                                    shape = RoundedCornerShape(50),
+                                    color = PureWhite.copy(alpha = 0.16f),
+                                    border = BorderStroke(1.dp, PureWhite.copy(alpha = 0.45f)),
+                                    modifier = Modifier.clickable { onToggleTheme() }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = if (isDark) Icons.Default.LightMode else Icons.Default.DarkMode,
+                                            contentDescription = "Switch Theme",
+                                            tint = CyberCyan,
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                        Spacer(Modifier.width(4.dp))
+                                        Text(
+                                            text = if (isDark) "Pearl" else "Cyber",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = PureWhite,
+                                            fontWeight = FontWeight.Bold
+                                        )
                                     }
                                 }
                             }
@@ -299,7 +292,7 @@ fun SkyPulseGlassDrawer(
                     Text(
                         text = "CUSTOMER SECTION",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MutedNavy,
+                        color = if (isDark) MutedLightBlue else MutedNavy,
                         fontWeight = FontWeight.ExtraBold,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
@@ -309,6 +302,7 @@ fun SkyPulseGlassDrawer(
                     DrawerRowCard(
                         item = item,
                         isUnlocked = true,
+                        isDark = isDark,
                         onTap = {
                             onCloseDrawer()
                             item.onClick()
@@ -318,7 +312,7 @@ fun SkyPulseGlassDrawer(
 
                 item {
                     Spacer(Modifier.height(8.dp))
-                    HorizontalDivider(color = LightSkyBlue.copy(alpha = 0.5f))
+                    HorizontalDivider(color = SkyBlue.copy(alpha = 0.4f))
                     Spacer(Modifier.height(10.dp))
                     Text(
                         text = "PARTNER, MERCHANT & ADMIN PANELS",
@@ -334,6 +328,7 @@ fun SkyPulseGlassDrawer(
                     DrawerRowCard(
                         item = item,
                         isUnlocked = unlocked,
+                        isDark = isDark,
                         onTap = {
                             onCloseDrawer()
                             item.onClick()
@@ -341,7 +336,7 @@ fun SkyPulseGlassDrawer(
                     )
                 }
 
-                item { Spacer(Modifier.height(20.dp)) }
+                item { Spacer(Modifier.height(22.dp)) }
             }
         }
     }
@@ -351,20 +346,30 @@ fun SkyPulseGlassDrawer(
 private fun DrawerRowCard(
     item: DrawerMenuItem,
     isUnlocked: Boolean,
+    isDark: Boolean,
     onTap: () -> Unit
 ) {
+    val cardColor = when {
+        item.lockedRole != null && isDark -> Color(0x99421646)
+        item.lockedRole != null -> PalePink.copy(alpha = 0.58f)
+        isDark -> GlassDarkHigh
+        else -> GlassWhiteHigh.copy(alpha = 0.86f)
+    }
+    val textColor = if (isDark) PureWhite else DarkNavy
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(18.dp))
             .clickable(onClick = onTap)
             .testTag(item.testTag),
-        shape = RoundedCornerShape(16.dp),
-        color = if (item.lockedRole != null) PalePink.copy(alpha = 0.45f) else GlassWhiteHigh.copy(alpha = 0.78f),
+        shape = RoundedCornerShape(18.dp),
+        color = cardColor,
         border = BorderStroke(
             width = 1.dp,
-            color = if (item.lockedRole != null) LightPink.copy(alpha = 0.7f) else PaleSky
-        )
+            color = if (item.lockedRole != null) PremiumPink.copy(alpha = 0.55f) else SkyBlue.copy(alpha = 0.35f)
+        ),
+        shadowElevation = 2.dp
     ) {
         Row(
             modifier = Modifier
@@ -374,18 +379,21 @@ private fun DrawerRowCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(34.dp)
-                    .clip(RoundedCornerShape(11.dp))
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(12.dp))
                     .background(
                         if (item.lockedRole != null) SkyToPinkBrush
-                        else Brush.linearGradient(listOf(PaleSky, PalePink))
+                        else Brush.linearGradient(
+                            if (isDark) listOf(Color(0xFF1D356A), Color(0xFF4C1D5F))
+                            else listOf(PaleSky, PalePink)
+                        )
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = item.icon,
                     contentDescription = null,
-                    tint = if (item.lockedRole != null) PureWhite else DarkNavy,
+                    tint = if (item.lockedRole != null || isDark) PureWhite else DarkNavy,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -393,7 +401,7 @@ private fun DrawerRowCard(
             Text(
                 text = "${item.number}. ${item.label}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = DarkNavy,
+                color = textColor,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
@@ -411,13 +419,13 @@ private fun DrawerRowCard(
             if (item.badge != null) {
                 Surface(
                     shape = CircleShape,
-                    color = if (item.lockedRole != null) DarkNavy else SkyBlue.copy(alpha = 0.2f)
+                    color = if (item.lockedRole != null) ObsidianNavy else SkyBlue.copy(alpha = 0.25f)
                 ) {
                     Text(
                         text = item.badge,
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (item.lockedRole != null) PureWhite else DarkNavy,
-                        fontWeight = FontWeight.Bold,
+                        color = if (item.lockedRole != null || isDark) PureWhite else DarkNavy,
+                        fontWeight = FontWeight.ExtraBold,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                     )
                 }
@@ -434,7 +442,7 @@ private data class BottomNavTab(
 )
 
 /**
- * Floating 3D Glassmorphism Bottom Navigation Bar with safe navigationBarsPadding.
+ * VisionOS-Style Floating 3D Glassmorphism Bottom Navigation Dock with glowing active pill & elevated lift.
  */
 @Composable
 fun FloatingGlassBottomBar(
@@ -442,6 +450,7 @@ fun FloatingGlassBottomBar(
     liveOrdersCount: Int,
     onSelect: (AppRoute) -> Unit
 ) {
+    val isDark = LocalIsDarkGlass.current
     val tabs = listOf(
         BottomNavTab(AppRoute.Home, "Home", Icons.Default.Home, "nav_home"),
         BottomNavTab(AppRoute.Services, "Services", Icons.Default.GridView, "nav_services"),
@@ -461,14 +470,14 @@ fun FloatingGlassBottomBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(
-                    elevation = 16.dp,
-                    shape = RoundedCornerShape(30.dp),
-                    ambientColor = SkyBlue.copy(alpha = 0.35f),
-                    spotColor = PremiumPink.copy(alpha = 0.35f)
+                    elevation = 22.dp,
+                    shape = RoundedCornerShape(32.dp),
+                    ambientColor = SkyBlue.copy(alpha = 0.45f),
+                    spotColor = ElectricPink.copy(alpha = 0.48f)
                 ),
-            shape = RoundedCornerShape(30.dp),
-            color = DarkNavy.copy(alpha = 0.94f),
-            border = BorderStroke(1.2.dp, SkyToPinkBrush)
+            shape = RoundedCornerShape(32.dp),
+            color = if (isDark) Color(0xEC09122B) else Color(0xF00F1B3D),
+            border = BorderStroke(1.5.dp, SkyToPinkBrush)
         ) {
             Row(
                 modifier = Modifier
@@ -480,9 +489,14 @@ fun FloatingGlassBottomBar(
                 tabs.forEach { tab ->
                     val selected = currentRoute == tab.route
                     val scale by animateFloatAsState(
-                        targetValue = if (selected) 1.08f else 0.96f,
+                        targetValue = if (selected) 1.07f else 0.95f,
                         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
                         label = "nav_scale"
+                    )
+                    val lift by animateFloatAsState(
+                        targetValue = if (selected) -3f else 0f,
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+                        label = "nav_lift"
                     )
                     val tint by animateColorAsState(
                         targetValue = if (selected) PureWhite else LightSkyBlue.copy(alpha = 0.72f),
@@ -495,14 +509,25 @@ fun FloatingGlassBottomBar(
                             .graphicsLayer {
                                 scaleX = scale
                                 scaleY = scale
+                                translationY = lift
                             }
-                            .clip(RoundedCornerShape(22.dp))
+                            .shadow(
+                                elevation = if (selected) 10.dp else 0.dp,
+                                shape = RoundedCornerShape(24.dp),
+                                spotColor = ElectricPink
+                            )
+                            .clip(RoundedCornerShape(24.dp))
                             .background(
                                 if (selected) SkyToPinkBrush
                                 else Brush.linearGradient(listOf(Color.Transparent, Color.Transparent))
                             )
+                            .border(
+                                width = if (selected) 1.dp else 0.dp,
+                                color = if (selected) PureWhite.copy(alpha = 0.6f) else Color.Transparent,
+                                shape = RoundedCornerShape(24.dp)
+                            )
                             .clickable { onSelect(tab.route) }
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = 9.dp)
                             .testTag(tab.tag),
                         contentAlignment = Alignment.Center
                     ) {
@@ -521,7 +546,7 @@ fun FloatingGlassBottomBar(
                                             .size(9.dp)
                                             .clip(CircleShape)
                                             .background(EmeraldSuccess)
-                                            .border(1.dp, PureWhite, CircleShape)
+                                            .border(1.2.dp, PureWhite, CircleShape)
                                     )
                                 }
                             }
@@ -530,7 +555,7 @@ fun FloatingGlassBottomBar(
                                 text = tab.label,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = tint,
-                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                                fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.Medium,
                                 maxLines = 1
                             )
                         }

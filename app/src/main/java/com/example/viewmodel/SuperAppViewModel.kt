@@ -29,6 +29,7 @@ data class SuperAppUiState(
     val backStack: List<AppRoute> = emptyList(),
     val activeRole: UserRole = UserRole.CUSTOMER,
     val unlockedRoles: Set<UserRole> = setOf(UserRole.CUSTOMER),
+    val isDarkGlassMode: Boolean = false,
     val snackbarMessage: String? = null,
     val globalSearchQuery: String = "",
     // Customer core data
@@ -97,6 +98,16 @@ class SuperAppViewModel : ViewModel() {
 
     fun showMessage(msg: String) {
         _uiState.update { it.copy(snackbarMessage = msg) }
+    }
+
+    fun toggleDarkGlassTheme() {
+        _uiState.update { state ->
+            val next = !state.isDarkGlassMode
+            state.copy(
+                isDarkGlassMode = next,
+                snackbarMessage = if (next) "Cyber Midnight 3D Glass Theme ON" else "Pearl Sky-Pink 3D Glass Theme ON"
+            )
+        }
     }
 
     // Navigation & Backstack

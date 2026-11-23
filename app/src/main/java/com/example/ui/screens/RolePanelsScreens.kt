@@ -105,11 +105,11 @@ fun RoleAuthGateScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(Icons.Default.Lock, null, tint = PremiumPink, modifier = Modifier.size(44.dp))
-                    Text("Authorized ${targetRole.title} Login", style = MaterialTheme.typography.headlineSmall, color = DarkNavy)
+                    Text("Authorized ${targetRole.title} Login", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface)
                     Text(
                         "Sensitive operational controls are protected from standard customer accounts. Enter your authorized ID & demo access PIN.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MutedNavy
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     OutlinedTextField(
                         value = emailOrId,
@@ -239,11 +239,11 @@ fun PartnerDashboardScreen(
             // Partner Category Switcher (filters jobs strictly to matching verified category)
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Verified Vehicle & Service Category", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                    Text("Verified Vehicle & Service Category", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                     Text(
                         "Safety Rule: You only receive requests matching your active verified vehicle category.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MutedNavy
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(PartnerCategory.entries) { cat ->
@@ -258,19 +258,19 @@ fun PartnerDashboardScreen(
             }
 
             item {
-                Text("Compatible Requests (${compatibleJobs.size})", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                Text("Compatible Requests (${compatibleJobs.size})", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
             }
 
             if (!partner.isOnline) {
                 item {
                     Glass3DCard(cornerRadius = 20.dp) {
-                        Text("Go ONLINE above to receive incoming ${partner.category.label} bookings.", style = MaterialTheme.typography.bodyMedium, color = MutedNavy)
+                        Text("Go ONLINE above to receive incoming ${partner.category.label} bookings.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             } else if (compatibleJobs.isEmpty()) {
                 item {
                     Glass3DCard(cornerRadius = 20.dp) {
-                        Text("No pending ${partner.category.label} requests right now. Book one from the Customer side or switch category to test!", style = MaterialTheme.typography.bodyMedium, color = MutedNavy)
+                        Text("No pending ${partner.category.label} requests right now. Book one from the Customer side or switch category to test!", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             } else {
@@ -279,13 +279,13 @@ fun PartnerDashboardScreen(
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                 StatusPill(job.status.label, if (job.status == PartnerJobStatus.COMPLETED) EmeraldSuccess else PremiumPink)
-                                Text("₹${job.payout} payout", style = MaterialTheme.typography.titleLarge, color = DarkNavy, fontWeight = FontWeight.ExtraBold)
+                                Text("₹${job.payout} payout", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold)
                             }
-                            Text("${job.itemSummary} • ${job.distanceKm} km", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                            Text("Customer: ${job.customerName} (${job.customerPhone})", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                            Text("${job.itemSummary} • ${job.distanceKm} km", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                            Text("Customer: ${job.customerName} (${job.customerPhone})", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("Pickup: ${job.pickup}", style = MaterialTheme.typography.bodySmall, color = SkyBlue)
                             Text("Drop: ${job.drop}", style = MaterialTheme.typography.bodySmall, color = PremiumPink)
-                            Text("Pickup OTP: ${job.pickupOtp} • Delivery OTP: ${job.deliveryOtp}", style = MaterialTheme.typography.labelSmall, color = DarkNavy)
+                            Text("Pickup OTP: ${job.pickupOtp} • Delivery OTP: ${job.deliveryOtp}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface)
 
                             when (job.status) {
                                 PartnerJobStatus.PENDING -> {
@@ -376,7 +376,7 @@ fun PartnerRegistrationScreen(
                 Glass3DCard(cornerRadius = 22.dp) {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                            Text("Verification Status", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Verification Status", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                             StatusPill(p.verificationStatus, if (p.verificationStatus == "Verified") EmeraldSuccess else AmberWarning)
                         }
                         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -482,10 +482,10 @@ fun RestaurantOwnerPanelScreen(
                     Glass3DCard(cornerRadius = 20.dp) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("${ticket.id} • ${ticket.customerName}", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text("${ticket.id} • ${ticket.customerName}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 StatusPill(ticket.status, if (ticket.status == "Rejected") RoseError else EmeraldSuccess)
                             }
-                            Text(ticket.itemsSummary, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                            Text(ticket.itemsSummary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("₹${ticket.totalAmount} • Prep: ${ticket.prepMinutes} mins • ${ticket.timestamp}", style = MaterialTheme.typography.labelSmall, color = PremiumPink)
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 if (ticket.status == "Incoming") {
@@ -504,7 +504,7 @@ fun RestaurantOwnerPanelScreen(
                 item {
                     Glass3DCard(cornerRadius = 20.dp) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("Add New Dish to Live Menu", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Add New Dish to Live Menu", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                             OutlinedTextField(value = newDishName, onValueChange = { newDishName = it }, label = { Text("Dish Name") }, modifier = Modifier.fillMaxWidth())
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                                 OutlinedTextField(
@@ -527,8 +527,8 @@ fun RestaurantOwnerPanelScreen(
                     Glass3DCard(cornerRadius = 18.dp) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
-                                Text(dish.name, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
-                                Text("₹${dish.price} • ${if (dish.isVeg) "Veg" else "Non-Veg"}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text(dish.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                                Text("₹${dish.price} • ${if (dish.isVeg) "Veg" else "Non-Veg"}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                             Switch(checked = dish.isAvailable, onCheckedChange = { viewModel.toggleMenuItemAvailability(dish.id) })
                             IconButton(onClick = { viewModel.deleteMenuItem(dish.id) }) {
@@ -595,10 +595,10 @@ fun GroceryOwnerPanelScreen(
                     Glass3DCard(cornerRadius = 20.dp) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("${ticket.id} • ${ticket.customerName}", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text("${ticket.id} • ${ticket.customerName}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 StatusPill(ticket.status, EmeraldSuccess)
                             }
-                            Text(ticket.itemsSummary, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                            Text(ticket.itemsSummary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("₹${ticket.totalAmount} • Rider: ${ticket.assignedDriver}", style = MaterialTheme.typography.labelSmall, color = SkyBlue)
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 if (ticket.status == "Incoming") {
@@ -615,7 +615,7 @@ fun GroceryOwnerPanelScreen(
                 item {
                     Glass3DCard(cornerRadius = 20.dp) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("Add Grocery Product", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Add Grocery Product", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 OutlinedTextField(value = newProdName, onValueChange = { newProdName = it }, label = { Text("Product Name") }, modifier = Modifier.weight(1.4f))
                                 OutlinedTextField(value = newProdPrice, onValueChange = { newProdPrice = it.filter(Char::isDigit) }, label = { Text("Price ₹") }, modifier = Modifier.weight(0.8f))
@@ -632,8 +632,8 @@ fun GroceryOwnerPanelScreen(
                     Glass3DCard(cornerRadius = 18.dp) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
-                                Text(prod.name, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
-                                Text("${prod.category} • ₹${prod.price} • Stock: ${prod.stock}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text(prod.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                                Text("${prod.category} • ₹${prod.price} • Stock: ${prod.stock}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                             IconButton(onClick = { viewModel.adjustGroceryStock(prod.id, -5) }) {
                                 Icon(Icons.Default.Remove, "Decrease stock")

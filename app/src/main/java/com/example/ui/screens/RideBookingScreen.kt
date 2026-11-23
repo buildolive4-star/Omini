@@ -163,8 +163,8 @@ fun RideBookingScreen(
                                 singleLine = true,
                                 shape = RoundedCornerShape(16.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedContainerColor = PureWhite,
-                                    unfocusedContainerColor = PureWhite
+                                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
                                 ),
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -182,8 +182,8 @@ fun RideBookingScreen(
                                 singleLine = true,
                                 shape = RoundedCornerShape(16.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
-                                    focusedContainerColor = PureWhite,
-                                    unfocusedContainerColor = PureWhite
+                                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
                                 ),
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -198,7 +198,7 @@ fun RideBookingScreen(
                                     matches.forEach { suggestion ->
                                         Surface(
                                             shape = RoundedCornerShape(12.dp),
-                                            color = PaleSky.copy(alpha = 0.65f),
+                                            color = MaterialTheme.colorScheme.primaryContainer,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clickable {
@@ -209,7 +209,7 @@ fun RideBookingScreen(
                                             Text(
                                                 text = suggestion,
                                                 style = MaterialTheme.typography.bodySmall,
-                                                color = DarkNavy,
+                                                color = MaterialTheme.colorScheme.onSurface,
                                                 modifier = Modifier.padding(10.dp)
                                             )
                                         }
@@ -230,7 +230,7 @@ fun RideBookingScreen(
 
                 // Vehicle Selection Cards
                 item {
-                    Text("Choose Your Ride", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                    Text("Choose Your Ride", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                 }
 
                 items(DemoDataSeeder.rideVehicles, key = { it.id }) { vehicle ->
@@ -247,7 +247,7 @@ fun RideBookingScreen(
                 // Payment Selection
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Payment Mode", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                        Text("Payment Mode", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             items(listOf("SkyPulse Wallet", "UPI", "Card •••• 4092", "Cash")) { method ->
                                 GlassChip(
@@ -296,8 +296,8 @@ fun RideBookingScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(Modifier.padding(10.dp)) {
-                                Text(msg.sender, style = MaterialTheme.typography.labelSmall, color = MutedNavy)
-                                Text(msg.text, style = MaterialTheme.typography.bodySmall, color = DarkNavy)
+                                Text(msg.sender, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(msg.text, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
                             }
                         }
                     }
@@ -352,7 +352,7 @@ private fun RideVehicleCard(
             .fillMaxWidth()
             .testTag("vehicle_${vehicle.id}"),
         cornerRadius = 22.dp,
-        containerColor = if (selected) PaleSky.copy(alpha = 0.92f) else GlassWhiteHigh,
+        containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else null,
         elevation = if (selected) 12.dp else 5.dp,
         onClick = onClick
     ) {
@@ -372,15 +372,15 @@ private fun RideVehicleCard(
             Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(vehicle.name, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                    Text(vehicle.name, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                     StatusPill(vehicle.badge, if (selected) PremiumPink else SkyBlue)
                 }
-                Text(vehicle.subtitle, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                Text(vehicle.subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("${vehicle.etaMinutes} mins away • ${vehicle.seats} seat(s)", style = MaterialTheme.typography.labelSmall, color = SkyBlue)
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text("₹$estimatedFare", style = MaterialTheme.typography.headlineSmall, color = DarkNavy, fontWeight = FontWeight.ExtraBold)
-                Text("Est. fare", style = MaterialTheme.typography.labelSmall, color = MutedNavy)
+                Text("₹$estimatedFare", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold)
+                Text("Est. fare", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -442,7 +442,7 @@ private fun ActiveRideTrackingView(
                     // Driver profile card
                     Surface(
                         shape = RoundedCornerShape(18.dp),
-                        color = PaleSky.copy(alpha = 0.55f),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         border = BorderStroke(1.dp, LightSkyBlue),
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -461,11 +461,11 @@ private fun ActiveRideTrackingView(
                             Spacer(Modifier.width(12.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(ride.driver.name, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                    Text(ride.driver.name, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                     Spacer(Modifier.width(4.dp))
                                     Icon(Icons.Default.VerifiedUser, null, tint = SkyBlue, modifier = Modifier.size(16.dp))
                                 }
-                                Text("${ride.driver.vehicleModel} • ${ride.driver.vehiclePlate}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text("${ride.driver.vehicleModel} • ${ride.driver.vehiclePlate}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text("★ ${ride.driver.rating} (${ride.driver.tripsCount} trips) • ₹${ride.fare} (${ride.paymentMethod})", style = MaterialTheme.typography.labelSmall, color = PremiumPink)
                             }
                         }
@@ -519,7 +519,7 @@ private fun ActiveRideTrackingView(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("You've arrived! Rate your Captain", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                            Text("You've arrived! Rate your Captain", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 (1..5).forEach { star ->
                                     IconButton(onClick = { selectedStars = star }) {

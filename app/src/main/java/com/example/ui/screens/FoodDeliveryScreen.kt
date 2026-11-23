@@ -171,7 +171,7 @@ fun FoodDeliveryScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Menu (${menu.size} items)", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                            Text("Menu (${menu.size} items)", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                             GlassChip(
                                 text = if (vegOnly) "Veg Only ✓" else "All Dishes",
                                 selected = vegOnly,
@@ -214,8 +214,8 @@ fun FoodDeliveryScreen(
                             singleLine = true,
                             shape = RoundedCornerShape(18.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = GlassWhiteHigh,
-                                unfocusedContainerColor = GlassWhiteHigh
+                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -265,7 +265,7 @@ fun FoodDeliveryScreen(
                     // Trending Dishes Quick Add
                     item {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("Trending Food Right Now", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Trending Food Right Now", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                             LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                 items(state.foodMenuItems.take(5), key = { "trend_${it.id}" }) { dish ->
                                     val restName = state.restaurants.find { it.id == dish.restaurantId }?.name ?: "SkyPulse Kitchen"
@@ -277,8 +277,8 @@ fun FoodDeliveryScreen(
                                     ) {
                                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                             StatusPill(if (dish.isVeg) "VEG" else "NON-VEG", if (dish.isVeg) EmeraldSuccess else RoseError)
-                                            Text(dish.name, style = MaterialTheme.typography.titleSmall, color = DarkNavy, maxLines = 1)
-                                            Text(restName, style = MaterialTheme.typography.bodySmall, color = MutedNavy, maxLines = 1)
+                                            Text(dish.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
+                                            Text(restName, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
                                             Row(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -295,7 +295,7 @@ fun FoodDeliveryScreen(
                     }
 
                     item {
-                        Text("Popular & Nearby Restaurants (${filteredRestaurants.size})", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                        Text("Popular & Nearby Restaurants (${filteredRestaurants.size})", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                     }
 
                     items(filteredRestaurants, key = { it.id }) { rest ->
@@ -343,7 +343,7 @@ fun FoodDeliveryScreen(
             title = { Text("Customize ${dish.name}") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(dish.description, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                    Text(dish.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     dish.customizations.forEach { opt ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -352,7 +352,7 @@ fun FoodDeliveryScreen(
                                 .clickable { chosenOption = opt }
                         ) {
                             RadioButton(selected = chosenOption == opt, onClick = { chosenOption = opt })
-                            Text(opt, style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                            Text(opt, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                 }
@@ -406,7 +406,7 @@ private fun RestaurantListCard(
             Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(restaurant.name, style = MaterialTheme.typography.titleMedium, color = DarkNavy, modifier = Modifier.weight(1f))
+                    Text(restaurant.name, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
                     IconButton(onClick = onToggleFav, modifier = Modifier.size(32.dp)) {
                         Icon(
                             imageVector = if (restaurant.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -415,13 +415,13 @@ private fun RestaurantListCard(
                         )
                     }
                 }
-                Text(restaurant.cuisine, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                Text(restaurant.cuisine, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Star, null, tint = AmberWarning, modifier = Modifier.size(14.dp))
-                        Text(" ${restaurant.rating}", style = MaterialTheme.typography.labelMedium, color = DarkNavy)
+                        Text(" ${restaurant.rating}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurface)
                     }
-                    Text("• ${restaurant.deliveryMinutes} mins • Min ₹${restaurant.minOrder}", style = MaterialTheme.typography.labelSmall, color = MutedNavy)
+                    Text("• ${restaurant.deliveryMinutes} mins • Min ₹${restaurant.minOrder}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 StatusPill(restaurant.offerTag, PremiumPink)
             }
@@ -447,15 +447,15 @@ private fun FoodMenuItemCard(
                     StatusPill(if (item.isVeg) "VEG" else "NON-VEG", if (item.isVeg) EmeraldSuccess else RoseError)
                     Text("★ ${item.rating}", style = MaterialTheme.typography.labelSmall, color = AmberWarning)
                 }
-                Text(item.name, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                Text(item.description, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                Text(item.name, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                Text(item.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("₹${item.price}", style = MaterialTheme.typography.titleMedium, color = PremiumPink, fontWeight = FontWeight.ExtraBold)
             }
             Spacer(Modifier.width(10.dp))
             if (quantityInCart == 0) {
                 Surface(
                     shape = RoundedCornerShape(14.dp),
-                    color = PalePink,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
                     border = BorderStroke(1.dp, PremiumPink),
                     modifier = Modifier
                         .clip(RoundedCornerShape(14.dp))
@@ -465,7 +465,7 @@ private fun FoodMenuItemCard(
                     Text(
                         text = "+ ADD",
                         style = MaterialTheme.typography.labelLarge,
-                        color = DarkNavy,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
                     )
                 }

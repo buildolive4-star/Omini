@@ -209,7 +209,7 @@ fun AiAssistantScreen(
                             bottomStart = if (msg.isUser) 20.dp else 6.dp,
                             bottomEnd = if (msg.isUser) 6.dp else 20.dp
                         ),
-                        color = if (msg.isUser) DarkNavy else GlassWhiteHigh,
+                        color = if (msg.isUser) DarkNavy else MaterialTheme.colorScheme.surface,
                         shadowElevation = 4.dp,
                         modifier = Modifier.fillMaxWidth(0.88f)
                     ) {
@@ -224,7 +224,7 @@ fun AiAssistantScreen(
                             Text(
                                 text = msg.text.ifBlank { "Thinking…" },
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = if (msg.isUser) PureWhite else DarkNavy
+                                color = if (msg.isUser) PureWhite else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -235,7 +235,7 @@ fun AiAssistantScreen(
                 item {
                     Surface(
                         shape = RoundedCornerShape(16.dp),
-                        color = PalePink,
+                        color = MaterialTheme.colorScheme.secondaryContainer,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
@@ -269,8 +269,8 @@ fun AiAssistantScreen(
                 singleLine = true,
                 shape = RoundedCornerShape(22.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = PureWhite,
-                    unfocusedContainerColor = PureWhite,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     focusedBorderColor = SkyBlue,
                     unfocusedBorderColor = PaleSky
                 ),

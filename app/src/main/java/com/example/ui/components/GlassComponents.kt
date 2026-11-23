@@ -47,8 +47,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -61,112 +65,235 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.ui.theme.CyberCyan
+import com.example.ui.theme.DarkAuroraBackgroundBrush
 import com.example.ui.theme.DarkNavy
+import com.example.ui.theme.ElectricPink
 import com.example.ui.theme.EmeraldSuccess
+import com.example.ui.theme.GlassBorderDark
 import com.example.ui.theme.GlassBorderLight
+import com.example.ui.theme.GlassDarkHigh
 import com.example.ui.theme.GlassWhiteHigh
+import com.example.ui.theme.IridescentViolet
 import com.example.ui.theme.LightPink
 import com.example.ui.theme.LightSkyBlue
+import com.example.ui.theme.LocalIsDarkGlass
+import com.example.ui.theme.MutedLightBlue
 import com.example.ui.theme.MutedNavy
 import com.example.ui.theme.PalePink
 import com.example.ui.theme.PaleSky
 import com.example.ui.theme.PremiumPink
 import com.example.ui.theme.PureWhite
 import com.example.ui.theme.SkyBlue
+import com.example.ui.theme.SkyBlueVibrant
 import com.example.ui.theme.SkyToPinkBrush
 import com.example.ui.theme.SoftSkyPinkBackgroundBrush
+import kotlin.math.PI
+import kotlin.math.sin
 
 /**
- * Full-bleed atmospheric Sky Blue & Pink animated glass backdrop.
+ * Ultra-Premium 3D Aurora Mesh Glass Background (supports Pearl Light Glass & Cyber Midnight Dark Glass).
  */
 @Composable
 fun AnimatedSkyPinkBackground(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val infinite = rememberInfiniteTransition(label = "bg_orbs")
+    val isDark = LocalIsDarkGlass.current
+    val infinite = rememberInfiniteTransition(label = "aurora_mesh")
     val drift by infinite.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(7500, easing = FastOutSlowInEasing),
+            animation = tween(8200, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "orb_drift"
+    )
+    val phase by infinite.animateFloat(
+        initialValue = 0f,
+        targetValue = (2f * PI).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(11000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "wave_phase"
     )
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(SoftSkyPinkBackgroundBrush)
+            .background(if (isDark) DarkAuroraBackgroundBrush else SoftSkyPinkBackgroundBrush)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val w = size.width
             val h = size.height
+            val orbAlpha = if (isDark) 0.34f else 0.28f
+
+            // Top-left Sky Blue luminous aurora orb
+            val c1 = Offset(w * (0.12f + 0.12f * drift), h * (0.08f + 0.05f * drift))
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(SkyBlue.copy(alpha = 0.24f), Color.Transparent),
-                    center = Offset(w * (0.15f + 0.08f * drift), h * (0.09f + 0.04f * drift)),
+                    colors = listOf(SkyBlue.copy(alpha = orbAlpha), Color.Transparent),
+                    center = c1,
+                    radius = w * 0.68f
+                ),
+                radius = w * 0.68f,
+                center = c1
+            )
+
+            // Right Electric Pink aurora orb
+            val c2 = Offset(w * (0.90f - 0.10f * drift), h * (0.26f + 0.06f * drift))
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(ElectricPink.copy(alpha = orbAlpha * 0.92f), Color.Transparent),
+                    center = c2,
+                    radius = w * 0.64f
+                ),
+                radius = w * 0.64f,
+                center = c2
+            )
+
+            // Mid-left Iridescent Violet accent orb
+            val c3 = Offset(w * (0.20f + 0.08f * drift), h * (0.58f - 0.04f * drift))
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(IridescentViolet.copy(alpha = orbAlpha * 0.65f), Color.Transparent),
+                    center = c3,
+                    radius = w * 0.54f
+                ),
+                radius = w * 0.54f,
+                center = c3
+            )
+
+            // Bottom-right Cyber Cyan glow
+            val c4 = Offset(w * (0.78f - 0.06f * drift), h * (0.86f - 0.04f * drift))
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(CyberCyan.copy(alpha = orbAlpha * 0.7f), Color.Transparent),
+                    center = c4,
                     radius = w * 0.58f
                 ),
                 radius = w * 0.58f,
-                center = Offset(w * (0.15f + 0.08f * drift), h * (0.09f + 0.04f * drift))
+                center = c4
             )
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(PremiumPink.copy(alpha = 0.22f), Color.Transparent),
-                    center = Offset(w * (0.88f - 0.07f * drift), h * (0.28f + 0.05f * drift)),
-                    radius = w * 0.55f
+
+            // Translucent flowing ribbon wave
+            val wavePath = Path().apply {
+                moveTo(0f, h * 0.24f)
+                val step = w / 24f
+                for (i in 0..24) {
+                    val x = i * step
+                    val y = h * 0.24f + sin(phase + i * 0.35f) * 26f
+                    lineTo(x, y)
+                }
+            }
+            drawPath(
+                path = wavePath,
+                brush = Brush.horizontalGradient(
+                    listOf(
+                        Color.Transparent,
+                        SkyBlue.copy(alpha = if (isDark) 0.24f else 0.18f),
+                        PremiumPink.copy(alpha = if (isDark) 0.24f else 0.18f),
+                        Color.Transparent
+                    )
                 ),
-                radius = w * 0.55f,
-                center = Offset(w * (0.88f - 0.07f * drift), h * (0.28f + 0.05f * drift))
+                style = Stroke(width = 3.5f, cap = StrokeCap.Round)
             )
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(LightSkyBlue.copy(alpha = 0.20f), Color.Transparent),
-                    center = Offset(w * (0.22f + 0.05f * drift), h * (0.78f - 0.04f * drift)),
-                    radius = w * 0.5f
-                ),
-                radius = w * 0.5f,
-                center = Offset(w * (0.22f + 0.05f * drift), h * (0.78f - 0.04f * drift))
-            )
+
+            // Floating sparkle particles
+            val dotColor = if (isDark) LightSkyBlue.copy(alpha = 0.45f) else PureWhite.copy(alpha = 0.72f)
+            listOf(
+                Offset(w * 0.18f, h * (0.16f + 0.02f * drift)),
+                Offset(w * 0.82f, h * (0.14f - 0.02f * drift)),
+                Offset(w * 0.64f, h * (0.42f + 0.03f * drift)),
+                Offset(w * 0.26f, h * (0.72f - 0.02f * drift)),
+                Offset(w * 0.86f, h * (0.68f + 0.02f * drift))
+            ).forEachIndexed { i, pos ->
+                drawCircle(dotColor, radius = if (i % 2 == 0) 4.5f else 3f, center = pos)
+            }
         }
         content()
     }
 }
 
 /**
- * 3D Floating Glassmorphism Card with specular highlight border and spring tilt interaction.
+ * True 3D Extruded Glassmorphism Card with specular reflection highlight, iridescent rim border,
+ * soft glowing under-bezel, and bouncy 3D perspective press tilt.
  */
 @Composable
 fun Glass3DCard(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 24.dp,
+    cornerRadius: Dp = 26.dp,
     gradientBrush: Brush? = null,
-    containerColor: Color = GlassWhiteHigh,
-    elevation: Dp = 10.dp,
+    containerColor: Color? = null,
+    elevation: Dp = 14.dp,
     onClick: (() -> Unit)? = null,
     contentPadding: PaddingValues = PaddingValues(16.dp),
     content: @Composable BoxScope.() -> Unit
 ) {
+    val isDark = LocalIsDarkGlass.current
+    val resolvedContainer = containerColor ?: if (isDark) GlassDarkHigh else GlassWhiteHigh
+
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (pressed && onClick != null) 0.97f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        targetValue = if (pressed && onClick != null) 0.965f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow),
         label = "card_scale"
     )
     val tiltX by animateFloatAsState(
-        targetValue = if (pressed && onClick != null) 3.5f else 0f,
+        targetValue = if (pressed && onClick != null) 5f else 0f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        label = "card_tilt"
+        label = "card_tilt_x"
+    )
+    val liftY by animateFloatAsState(
+        targetValue = if (pressed && onClick != null) 4f else 0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = "card_lift_y"
     )
 
     val shape = RoundedCornerShape(cornerRadius)
     val bgModifier = if (gradientBrush != null) {
         Modifier.background(gradientBrush, shape)
     } else {
-        Modifier.background(containerColor, shape)
+        Modifier.background(
+            Brush.verticalGradient(
+                listOf(
+                    resolvedContainer,
+                    resolvedContainer.copy(alpha = if (isDark) 0.80f else 0.92f)
+                )
+            ),
+            shape
+        )
+    }
+
+    val borderBrush = if (gradientBrush != null) {
+        Brush.linearGradient(
+            listOf(
+                PureWhite.copy(alpha = 0.85f),
+                LightSkyBlue.copy(alpha = 0.55f),
+                LightPink.copy(alpha = 0.65f),
+                PureWhite.copy(alpha = 0.4f)
+            )
+        )
+    } else if (isDark) {
+        Brush.linearGradient(
+            listOf(
+                GlassBorderDark,
+                PremiumPink.copy(alpha = 0.45f),
+                SkyBlue.copy(alpha = 0.35f)
+            )
+        )
+    } else {
+        Brush.linearGradient(
+            listOf(
+                GlassBorderLight,
+                SkyBlue.copy(alpha = 0.45f),
+                PremiumPink.copy(alpha = 0.42f),
+                PureWhite
+            )
+        )
     }
 
     Box(
@@ -175,23 +302,47 @@ fun Glass3DCard(
                 scaleX = scale
                 scaleY = scale
                 rotationX = tiltX
-                cameraDistance = 12f * density
+                translationY = liftY
+                cameraDistance = 14f * density
+            }
+            // Subtle 3D bottom-lip glow depth
+            .drawBehind {
+                val radiusPx = cornerRadius.toPx()
+                drawRoundRect(
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            SkyBlue.copy(alpha = if (isDark) 0.32f else 0.24f),
+                            PremiumPink.copy(alpha = if (isDark) 0.34f else 0.26f)
+                        )
+                    ),
+                    topLeft = Offset(x = 8f, y = 10f),
+                    size = Size(width = (size.width - 16f).coerceAtLeast(0f), height = size.height),
+                    cornerRadius = CornerRadius(radiusPx, radiusPx)
+                )
             }
             .shadow(
                 elevation = elevation,
                 shape = shape,
-                ambientColor = SkyBlue.copy(alpha = 0.22f),
-                spotColor = PremiumPink.copy(alpha = 0.24f)
+                ambientColor = SkyBlue.copy(alpha = 0.32f),
+                spotColor = PremiumPink.copy(alpha = 0.34f)
             )
             .clip(shape)
             .then(bgModifier)
-            .border(
-                width = 1.2.dp,
-                brush = Brush.linearGradient(
-                    colors = listOf(GlassBorderLight, SkyBlue.copy(alpha = 0.35f), PremiumPink.copy(alpha = 0.35f))
-                ),
-                shape = shape
-            )
+            // Specular diagonal glass light sheen
+            .drawWithContent {
+                drawContent()
+                drawRect(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            PureWhite.copy(alpha = if (gradientBrush != null) 0.26f else if (isDark) 0.11f else 0.45f),
+                            Color.Transparent
+                        ),
+                        start = Offset(0f, 0f),
+                        end = Offset(size.width * 0.65f, size.height * 0.55f)
+                    )
+                )
+            }
+            .border(width = 1.4.dp, brush = borderBrush, shape = shape)
             .then(
                 if (onClick != null) {
                     Modifier.clickable(
@@ -209,7 +360,7 @@ fun Glass3DCard(
 }
 
 /**
- * Animated Sky-Blue-to-Pink 3D gradient CTA button (enforces >= 48.dp touch target).
+ * Animated Shimmering Sky-to-Pink 3D Gradient CTA Pill Button with glossy sheen sweep.
  */
 @Composable
 fun GradientPillButton(
@@ -224,9 +375,19 @@ fun GradientPillButton(
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (pressed && enabled) 0.96f else 1f,
+        targetValue = if (pressed && enabled) 0.95f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
         label = "btn_scale"
+    )
+    val infinite = rememberInfiniteTransition(label = "btn_sheen")
+    val sheenProgress by infinite.animateFloat(
+        initialValue = -0.5f,
+        targetValue = 1.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2600, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "sheen_pos"
     )
     val shape = RoundedCornerShape(50)
 
@@ -239,16 +400,29 @@ fun GradientPillButton(
             }
             .heightIn(min = 48.dp)
             .shadow(
-                elevation = if (enabled) 8.dp else 0.dp,
+                elevation = if (enabled) 12.dp else 0.dp,
                 shape = shape,
-                spotColor = PremiumPink.copy(alpha = 0.4f),
-                ambientColor = SkyBlue.copy(alpha = 0.4f)
+                spotColor = ElectricPink.copy(alpha = 0.52f),
+                ambientColor = SkyBlueVibrant.copy(alpha = 0.48f)
             )
             .clip(shape)
             .background(
-                if (enabled) brush else Brush.linearGradient(listOf(Color(0xFFCBD5E1), Color(0xFF94A3B8)))
+                if (enabled) brush else Brush.linearGradient(listOf(Color(0xFF94A3B8), Color(0xFF64748B)))
             )
-            .border(1.dp, PureWhite.copy(alpha = 0.55f), shape)
+            .drawWithContent {
+                drawContent()
+                if (enabled) {
+                    val x = size.width * sheenProgress
+                    drawRect(
+                        brush = Brush.linearGradient(
+                            colors = listOf(Color.Transparent, PureWhite.copy(alpha = 0.32f), Color.Transparent),
+                            start = Offset(x - 90f, 0f),
+                            end = Offset(x + 90f, size.height)
+                        )
+                    )
+                }
+            }
+            .border(1.2.dp, PureWhite.copy(alpha = 0.65f), shape)
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -275,14 +449,14 @@ fun GradientPillButton(
                 text = text,
                 style = MaterialTheme.typography.labelLarge,
                 color = PureWhite,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.ExtraBold
             )
         }
     }
 }
 
 /**
- * Reusable Top Header for sub-screens with glass back button & optional right badge/action.
+ * Reusable Top Header for sub-screens adapting cleanly to Pearl Light & Cyber Dark Glass.
  */
 @Composable
 fun GlassSubScreenHeader(
@@ -291,6 +465,10 @@ fun GlassSubScreenHeader(
     onBack: () -> Unit,
     trailing: (@Composable () -> Unit)? = null
 ) {
+    val isDark = LocalIsDarkGlass.current
+    val titleColor = if (isDark) PureWhite else DarkNavy
+    val subtitleColor = if (isDark) MutedLightBlue else MutedNavy
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -299,9 +477,9 @@ fun GlassSubScreenHeader(
     ) {
         Surface(
             shape = CircleShape,
-            color = GlassWhiteHigh,
-            border = BorderStroke(1.dp, SkyBlue.copy(alpha = 0.4f)),
-            shadowElevation = 4.dp
+            color = if (isDark) GlassDarkHigh else GlassWhiteHigh,
+            border = BorderStroke(1.2.dp, SkyBlue.copy(alpha = 0.55f)),
+            shadowElevation = 6.dp
         ) {
             IconButton(
                 onClick = onBack,
@@ -312,7 +490,7 @@ fun GlassSubScreenHeader(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = DarkNavy
+                    tint = titleColor
                 )
             }
         }
@@ -321,14 +499,14 @@ fun GlassSubScreenHeader(
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineSmall,
-                color = DarkNavy,
-                fontWeight = FontWeight.Bold
+                color = titleColor,
+                fontWeight = FontWeight.ExtraBold
             )
             if (!subtitle.isNullOrBlank()) {
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MutedNavy
+                    color = subtitleColor
                 )
             }
         }
@@ -339,7 +517,7 @@ fun GlassSubScreenHeader(
 }
 
 /**
- * Animated Multi-Step Live Progress Stepper for Rides, Food, Grocery, Parcel & Transport.
+ * Animated Multi-Step Live Progress Stepper with glowing nodes.
  */
 @Composable
 fun AnimatedOrderStepper(
@@ -347,6 +525,7 @@ fun AnimatedOrderStepper(
     currentStep: Int,
     modifier: Modifier = Modifier
 ) {
+    val isDark = LocalIsDarkGlass.current
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
@@ -365,15 +544,16 @@ fun AnimatedOrderStepper(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(3.dp)
+                            .height(3.5.dp)
                             .background(
                                 if (index == 0) Color.Transparent
-                                else if (reached) SkyBlue else PaleSky
+                                else if (reached) SkyBlue else PaleSky.copy(alpha = if (isDark) 0.25f else 1f)
                             )
                     )
                     Box(
                         modifier = Modifier
-                            .size(if (isCurrent) 24.dp else 20.dp)
+                            .size(if (isCurrent) 26.dp else 20.dp)
+                            .shadow(if (isCurrent) 8.dp else 0.dp, CircleShape, spotColor = PremiumPink)
                             .clip(CircleShape)
                             .background(
                                 if (reached) SkyToPinkBrush
@@ -398,19 +578,24 @@ fun AnimatedOrderStepper(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(3.dp)
+                            .height(3.5.dp)
                             .background(
                                 if (index == steps.lastIndex) Color.Transparent
-                                else if (index < currentStep) PremiumPink else PaleSky
+                                else if (index < currentStep) PremiumPink else PaleSky.copy(alpha = if (isDark) 0.25f else 1f)
                             )
                     )
                 }
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(5.dp))
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (reached) DarkNavy else MutedNavy,
-                    fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Medium,
+                    color = when {
+                        reached && isDark -> PureWhite
+                        reached -> DarkNavy
+                        isDark -> MutedLightBlue.copy(alpha = 0.65f)
+                        else -> MutedNavy
+                    },
+                    fontWeight = if (isCurrent) FontWeight.ExtraBold else FontWeight.Medium,
                     maxLines = 2
                 )
             }
@@ -419,7 +604,7 @@ fun AnimatedOrderStepper(
 }
 
 /**
- * Animated Interactive Hyperlocal Map Canvas with simulated glowing route & moving marker.
+ * Futuristic Neon Glass Route Map Canvas with glowing bezier path and radar pulse.
  */
 @Composable
 fun InteractiveRouteMapCanvas(
@@ -429,10 +614,11 @@ fun InteractiveRouteMapCanvas(
     vehicleTag: String,
     modifier: Modifier = Modifier
 ) {
+    val isDark = LocalIsDarkGlass.current
     val infinite = rememberInfiniteTransition(label = "map_pulse")
     val pulse by infinite.animateFloat(
         initialValue = 0.5f,
-        targetValue = 1.6f,
+        targetValue = 1.75f,
         animationSpec = infiniteRepeatable(
             animation = tween(1400, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
@@ -443,21 +629,23 @@ fun InteractiveRouteMapCanvas(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(200.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .height(210.dp)
+            .shadow(14.dp, RoundedCornerShape(26.dp), ambientColor = SkyBlue, spotColor = PremiumPink)
+            .clip(RoundedCornerShape(26.dp))
             .background(
-                Brush.linearGradient(
-                    listOf(Color(0xFFDFF4FF), Color(0xFFF0F9FF), Color(0xFFFFEAF5))
-                )
+                if (isDark) {
+                    Brush.linearGradient(listOf(Color(0xFF0A1432), Color(0xFF14224A), Color(0xFF281548)))
+                } else {
+                    Brush.linearGradient(listOf(Color(0xFFD9F2FF), Color(0xFFF3FAFF), Color(0xFFFFE6F3)))
+                }
             )
-            .border(1.5.dp, PureWhite, RoundedCornerShape(24.dp))
+            .border(1.5.dp, if (isDark) SkyBlue.copy(alpha = 0.5f) else PureWhite, RoundedCornerShape(26.dp))
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val w = size.width
             val h = size.height
+            val roadColor = if (isDark) SkyBlue.copy(alpha = 0.16f) else PureWhite.copy(alpha = 0.9f)
 
-            // Stylized city road grid
-            val roadColor = PureWhite.copy(alpha = 0.85f)
             for (i in 1..4) {
                 val y = h * (i / 5f)
                 drawLine(roadColor, Offset(0f, y), Offset(w, y), strokeWidth = 5f)
@@ -467,48 +655,43 @@ fun InteractiveRouteMapCanvas(
                 drawLine(roadColor, Offset(x, 0f), Offset(x, h), strokeWidth = 4f)
             }
 
-            // Soft city park blocks
-            drawCircle(Color(0xFFBAE6FD).copy(alpha = 0.45f), radius = 38f, center = Offset(w * 0.28f, h * 0.30f))
-            drawCircle(Color(0xFFFBCFE8).copy(alpha = 0.45f), radius = 44f, center = Offset(w * 0.74f, h * 0.68f))
+            drawCircle(SkyBlue.copy(alpha = if (isDark) 0.18f else 0.35f), radius = 42f, center = Offset(w * 0.28f, h * 0.30f))
+            drawCircle(PremiumPink.copy(alpha = if (isDark) 0.18f else 0.35f), radius = 48f, center = Offset(w * 0.74f, h * 0.68f))
 
-            val start = Offset(w * 0.16f, h * 0.72f)
-            val ctrl = Offset(w * 0.48f, h * 0.18f)
-            val end = Offset(w * 0.84f, h * 0.34f)
+            val start = Offset(w * 0.15f, h * 0.72f)
+            val ctrl = Offset(w * 0.48f, h * 0.16f)
+            val end = Offset(w * 0.85f, h * 0.34f)
 
-            // Route curve
             val routePath = Path().apply {
                 moveTo(start.x, start.y)
                 quadraticTo(ctrl.x, ctrl.y, end.x, end.y)
             }
 
-            // Route glow
             drawPath(
                 path = routePath,
-                color = SkyBlue.copy(alpha = 0.25f),
-                style = Stroke(width = 16f, cap = StrokeCap.Round)
+                color = SkyBlue.copy(alpha = 0.30f),
+                style = Stroke(width = 20f, cap = StrokeCap.Round)
             )
-            // Dashed neon route
             drawPath(
                 path = routePath,
-                brush = Brush.linearGradient(listOf(SkyBlue, PremiumPink)),
+                brush = Brush.linearGradient(listOf(CyberCyan, SkyBlue, ElectricPink)),
                 style = Stroke(
-                    width = 7f,
+                    width = 7.5f,
                     cap = StrokeCap.Round,
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(18f, 10f), 0f)
                 )
             )
 
             // Pickup Pin
-            drawCircle(SkyBlue.copy(alpha = 0.25f), radius = 22f, center = start)
-            drawCircle(SkyBlue, radius = 11f, center = start)
+            drawCircle(SkyBlue.copy(alpha = 0.28f), radius = 24f, center = start)
+            drawCircle(SkyBlueVibrant, radius = 12f, center = start)
             drawCircle(PureWhite, radius = 5f, center = start)
 
             // Drop Pin
-            drawCircle(PremiumPink.copy(alpha = 0.25f), radius = 22f, center = end)
-            drawCircle(PremiumPink, radius = 11f, center = end)
+            drawCircle(ElectricPink.copy(alpha = 0.28f), radius = 24f, center = end)
+            drawCircle(ElectricPink, radius = 12f, center = end)
             drawCircle(PureWhite, radius = 5f, center = end)
 
-            // Moving Vehicle Marker along quadratic Bezier
             val t = progress.coerceIn(0f, 1f)
             val inv = 1f - t
             val mx = inv * inv * start.x + 2 * inv * t * ctrl.x + t * t * end.x
@@ -516,31 +699,31 @@ fun InteractiveRouteMapCanvas(
             val marker = Offset(mx, my)
 
             drawCircle(
-                color = PremiumPink.copy(alpha = (1.6f - pulse).coerceIn(0f, 0.45f)),
-                radius = 18f * pulse,
+                color = ElectricPink.copy(alpha = (1.75f - pulse).coerceIn(0f, 0.50f)),
+                radius = 20f * pulse,
                 center = marker
             )
-            drawCircle(DarkNavy, radius = 14f, center = marker)
-            drawCircle(SkyBlue, radius = 8f, center = marker)
+            drawCircle(DarkNavy, radius = 15f, center = marker)
+            drawCircle(CyberCyan, radius = 8f, center = marker)
         }
 
-        // Top-left simulated badge
         Surface(
             shape = RoundedCornerShape(50),
-            color = DarkNavy.copy(alpha = 0.85f),
+            color = DarkNavy.copy(alpha = 0.88f),
+            border = BorderStroke(1.dp, SkyBlue.copy(alpha = 0.6f)),
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(10.dp)
         ) {
             Text(
-                text = "LIVE SIMULATED MAP • $vehicleTag",
+                text = "3D LIVE HUD • $vehicleTag",
                 style = MaterialTheme.typography.labelSmall,
                 color = PureWhite,
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 11.dp, vertical = 5.dp)
             )
         }
 
-        // Pickup & drop chips
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -550,28 +733,28 @@ fun InteractiveRouteMapCanvas(
         ) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = GlassWhiteHigh,
+                color = if (isDark) GlassDarkHigh else GlassWhiteHigh,
                 border = BorderStroke(1.dp, SkyBlue)
             ) {
                 Text(
                     text = "A: ${pickupLabel.take(18)}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = DarkNavy,
+                    color = if (isDark) PureWhite else DarkNavy,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp)
                 )
             }
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = GlassWhiteHigh,
+                color = if (isDark) GlassDarkHigh else GlassWhiteHigh,
                 border = BorderStroke(1.dp, PremiumPink)
             ) {
                 Text(
                     text = "B: ${dropLabel.take(18)}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = DarkNavy,
+                    color = if (isDark) PureWhite else DarkNavy,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp)
                 )
             }
         }
@@ -585,6 +768,7 @@ fun GlassChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isDark = LocalIsDarkGlass.current
     val shape = RoundedCornerShape(50)
     Surface(
         modifier = modifier
@@ -592,22 +776,28 @@ fun GlassChip(
             .clip(shape)
             .clickable(onClick = onClick),
         shape = shape,
-        color = if (selected) DarkNavy else GlassWhiteHigh,
+        color = when {
+            selected -> Color.Transparent
+            isDark -> GlassDarkHigh
+            else -> GlassWhiteHigh
+        },
         border = BorderStroke(
-            width = 1.dp,
-            color = if (selected) SkyBlue else LightSkyBlue.copy(alpha = 0.6f)
+            width = 1.2.dp,
+            color = if (selected) PureWhite.copy(alpha = 0.7f) else SkyBlue.copy(alpha = 0.45f)
         ),
-        shadowElevation = if (selected) 5.dp else 1.dp
+        shadowElevation = if (selected) 8.dp else 2.dp
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+            modifier = Modifier
+                .then(if (selected) Modifier.background(SkyToPinkBrush, shape) else Modifier)
+                .padding(horizontal = 14.dp, vertical = 8.dp)
         ) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelMedium,
-                color = if (selected) PureWhite else DarkNavy,
-                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
+                color = if (selected || isDark) PureWhite else DarkNavy,
+                fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.SemiBold
             )
         }
     }
@@ -620,14 +810,14 @@ fun StatusPill(
 ) {
     Surface(
         shape = RoundedCornerShape(50),
-        color = color.copy(alpha = 0.14f),
-        border = BorderStroke(1.dp, color.copy(alpha = 0.4f))
+        color = color.copy(alpha = 0.18f),
+        border = BorderStroke(1.dp, color.copy(alpha = 0.55f))
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelSmall,
             color = color,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
         )
     }
@@ -652,7 +842,7 @@ fun ShimmerSkeletonCard(
         modifier = modifier
             .fillMaxWidth()
             .height(height)
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(22.dp))
             .background(
                 Brush.linearGradient(
                     listOf(
@@ -662,6 +852,6 @@ fun ShimmerSkeletonCard(
                     )
                 )
             )
-            .border(1.dp, PureWhite.copy(alpha = 0.8f), RoundedCornerShape(20.dp))
+            .border(1.2.dp, PureWhite.copy(alpha = 0.85f), RoundedCornerShape(22.dp))
     )
 }

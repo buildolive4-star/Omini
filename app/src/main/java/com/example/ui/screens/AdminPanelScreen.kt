@@ -141,9 +141,9 @@ fun AdminPanelScreen(
                                         row.forEach { (label, value) ->
                                             Glass3DCard(modifier = Modifier.weight(1f), cornerRadius = 18.dp, contentPadding = PaddingValues(14.dp)) {
                                                 Column {
-                                                    Text(label, style = MaterialTheme.typography.labelSmall, color = MutedNavy)
+                                                    Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                                     Spacer(Modifier.height(4.dp))
-                                                    Text(value, style = MaterialTheme.typography.headlineSmall, color = DarkNavy, fontWeight = FontWeight.ExtraBold)
+                                                    Text(value, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold)
                                                 }
                                             }
                                         }
@@ -157,14 +157,14 @@ fun AdminPanelScreen(
                         item {
                             Glass3DCard(cornerRadius = 22.dp) {
                                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    Text("Commission, Delivery & Dynamic Surge", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                                    Text("Platform Commission: ${"%.1f".format(commission)}%", style = MaterialTheme.typography.bodySmall, color = DarkNavy)
+                                    Text("Commission, Delivery & Dynamic Surge", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                                    Text("Platform Commission: ${"%.1f".format(commission)}%", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
                                     Slider(
                                         value = commission.toFloat(),
                                         onValueChange = { commission = it.toDouble() },
                                         valueRange = 5f..30f
                                     )
-                                    Text("Base Delivery Charge: ₹$deliveryFee", style = MaterialTheme.typography.bodySmall, color = DarkNavy)
+                                    Text("Base Delivery Charge: ₹$deliveryFee", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
                                     Slider(
                                         value = deliveryFee.toFloat(),
                                         onValueChange = { deliveryFee = it.roundToInt() },
@@ -177,7 +177,7 @@ fun AdminPanelScreen(
                                         valueRange = 1.0f..2.5f
                                     )
                                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                        Text("Dynamic Pricing Engine", style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                                        Text("Dynamic Pricing Engine", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                                         Switch(checked = dynamicPricing, onCheckedChange = { dynamicPricing = it })
                                     }
                                     GradientPillButton(
@@ -196,10 +196,10 @@ fun AdminPanelScreen(
                         item {
                             Glass3DCard(cornerRadius = 22.dp) {
                                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Text("City & Service Area Management", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                    Text("City & Service Area Management", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                     state.adminConfig.activeCities.forEach { (city, enabled) ->
                                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                            Text(city, style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                                            Text(city, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                                             Switch(checked = enabled, onCheckedChange = { viewModel.toggleAdminCity(city) })
                                         }
                                     }
@@ -210,7 +210,7 @@ fun AdminPanelScreen(
                         item {
                             Glass3DCard(cornerRadius = 22.dp) {
                                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Text("Publish Platform Coupon", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                    Text("Publish Platform Coupon", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                         OutlinedTextField(
                                             value = newCouponCode,
@@ -238,11 +238,11 @@ fun AdminPanelScreen(
                         item {
                             Glass3DCard(cornerRadius = 22.dp) {
                                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Text("Partner Verification Queue", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                    Text("Partner Verification Queue", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         Column(Modifier.weight(1f)) {
-                                            Text(state.partnerProfile.name, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
-                                            Text("${state.partnerProfile.category.label} • RC: ${state.partnerProfile.vehicleRc}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                            Text(state.partnerProfile.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                                            Text("${state.partnerProfile.category.label} • RC: ${state.partnerProfile.vehicleRc}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                         }
                                         if (state.partnerProfile.verificationStatus == "Verified") {
                                             StatusPill("Verified", EmeraldSuccess)
@@ -255,17 +255,17 @@ fun AdminPanelScreen(
                         }
 
                         item {
-                            Text("Support Complaints & Refunds", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Support Complaints & Refunds", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         }
 
                         items(state.complaints, key = { it.id }) { cmp ->
                             Glass3DCard(cornerRadius = 18.dp) {
                                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                        Text("${cmp.id} • ${cmp.userName}", style = MaterialTheme.typography.titleSmall, color = DarkNavy)
+                                        Text("${cmp.id} • ${cmp.userName}", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
                                         StatusPill(cmp.status, if (cmp.status == "Resolved") EmeraldSuccess else AmberWarning)
                                     }
-                                    Text(cmp.topic, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                    Text(cmp.topic, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     if (cmp.status != "Resolved") {
                                         OutlinedButton(onClick = { viewModel.resolveComplaint(cmp.id) }) {
                                             Text("Resolve & Credit ₹${cmp.refundAmount}")
@@ -309,7 +309,7 @@ fun AdminPanelScreen(
                         }
 
                         item {
-                            Text("Suspicious Booking Alerts", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Suspicious Booking Alerts", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         }
 
                         items(state.fraudAlerts, key = { it.id }) { alert ->
@@ -318,11 +318,11 @@ fun AdminPanelScreen(
                                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                                             Icon(Icons.Default.Shield, null, tint = if (alert.resolved) EmeraldSuccess else RoseError)
-                                            Text("${alert.id} • ${alert.bookingId}", style = MaterialTheme.typography.titleSmall, color = DarkNavy)
+                                            Text("${alert.id} • ${alert.bookingId}", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
                                         }
                                         StatusPill(if (alert.resolved) "Resolved" else "${alert.riskLevel} Risk", if (alert.resolved) EmeraldSuccess else RoseError)
                                     }
-                                    Text(alert.reason, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                    Text(alert.reason, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     if (!alert.resolved) {
                                         OutlinedButton(onClick = { viewModel.resolveFraudAlert(alert.id) }) {
                                             Text("Mark Reviewed & Clear")

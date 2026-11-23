@@ -76,9 +76,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            SkyPulseTheme {
-                SkyPulseSuperAppRoot()
-            }
+            SkyPulseSuperAppRoot()
         }
     }
 }
@@ -88,6 +86,16 @@ fun SkyPulseSuperAppRoot(
     viewModel: SuperAppViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    SkyPulseTheme(darkGlassTheme = state.isDarkGlassMode) {
+        SkyPulseSuperAppScaffold(state = state, viewModel = viewModel)
+    }
+}
+
+@Composable
+private fun SkyPulseSuperAppScaffold(
+    state: com.example.viewmodel.SuperAppUiState,
+    viewModel: SuperAppViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -153,6 +161,7 @@ fun SkyPulseSuperAppRoot(
             SkyPulseGlassDrawer(
                 state = state,
                 onNavigate = { route -> viewModel.navigateTo(route) },
+                onToggleTheme = { viewModel.toggleDarkGlassTheme() },
                 onLogout = { viewModel.logoutRolePanels() },
                 onCloseDrawer = { scope.launch { drawerState.close() } }
             )

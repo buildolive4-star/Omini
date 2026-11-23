@@ -93,8 +93,8 @@ fun WalletScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            Text("SkyPulse Fintech Wallet", style = MaterialTheme.typography.headlineMedium, color = DarkNavy)
-            Text("Instant top-ups, cashback refunds & unified payments", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+            Text("SkyPulse Fintech Wallet", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface)
+            Text("Instant top-ups, cashback refunds & unified payments", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
         // 3D Glass Wallet Hero Card
@@ -128,7 +128,7 @@ fun WalletScreen(
         item {
             Glass3DCard(cornerRadius = 22.dp) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("Add Money Instantly (Simulated)", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                    Text("Add Money Instantly (Simulated)", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(listOf(200, 500, 1000, 2000)) { amt ->
                             GlassChip(
@@ -169,12 +169,12 @@ fun WalletScreen(
         item {
             Glass3DCard(cornerRadius = 22.dp) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Payment Methods", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                    Text("Payment Methods", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                     listOf("SkyPulse Wallet", "UPI (aarav@okhdfcbank)", "Card •••• 4092", "Net Banking", "Cash where supported").forEach { pm ->
                         val active = state.selectedPaymentMethod == pm
                         Surface(
                             shape = RoundedCornerShape(14.dp),
-                            color = if (active) PaleSky else PureWhite,
+                            color = if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
                             border = BorderStroke(1.dp, if (active) SkyBlue else PaleSky),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -186,7 +186,7 @@ fun WalletScreen(
                             ) {
                                 Icon(Icons.Default.CreditCard, null, tint = if (active) SkyBlue else MutedNavy)
                                 Spacer(Modifier.width(10.dp))
-                                Text(pm, style = MaterialTheme.typography.bodyMedium, color = DarkNavy, modifier = Modifier.weight(1f))
+                                Text(pm, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
                                 if (active) StatusPill("DEFAULT", EmeraldSuccess)
                             }
                         }
@@ -197,7 +197,7 @@ fun WalletScreen(
 
         // Transactions
         item {
-            Text("Transaction History", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+            Text("Transaction History", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
         }
 
         items(state.transactions, key = { it.id }) { tx ->
@@ -207,8 +207,8 @@ fun WalletScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(tx.title, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
-                        Text("${tx.category} • ${tx.timestamp}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                        Text(tx.title, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                        Text("${tx.category} • ${tx.timestamp}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
@@ -217,7 +217,7 @@ fun WalletScreen(
                             color = if (tx.isCredit) EmeraldSuccess else RoseError,
                             fontWeight = FontWeight.ExtraBold
                         )
-                        Text(tx.status, style = MaterialTheme.typography.labelSmall, color = MutedNavy)
+                        Text(tx.status, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -286,8 +286,8 @@ fun ProfileScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text("Referral Code: ${state.profile.referralCode}", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                        Text("Invite friends & earn ₹100 • Loyalty: ${state.profile.loyaltyPoints} pts", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                        Text("Referral Code: ${state.profile.referralCode}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                        Text("Invite friends & earn ₹100 • Loyalty: ${state.profile.loyaltyPoints} pts", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     StatusPill("₹${state.profile.referralEarned} Won", EmeraldSuccess)
                 }
@@ -318,7 +318,7 @@ fun ProfileScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(icon, null, tint = PremiumPink, modifier = Modifier.size(22.dp))
                                     Spacer(Modifier.width(8.dp))
-                                    Text(label, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
+                                    Text(label, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
                                 }
                             }
                         }
@@ -403,8 +403,8 @@ private fun CustomerUtilitySectionContent(
                                 Column(Modifier.weight(1f)) {
                                     StatusPill(c.code, PremiumPink)
                                     Spacer(Modifier.height(4.dp))
-                                    Text(c.title, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                                    Text("${c.description} (${c.serviceScope})", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                    Text(c.title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                                    Text("${c.description} (${c.serviceScope})", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                                 GradientPillButton("Apply", {
                                     viewModel.applyCoupon(c.code)
@@ -423,8 +423,8 @@ private fun CustomerUtilitySectionContent(
                                     StatusPill(addr.tag, SkyBlue)
                                     if (addr.isDefault) StatusPill("DEFAULT", EmeraldSuccess)
                                 }
-                                Text(addr.label, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                                Text(addr.fullAddress, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text(addr.label, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                                Text(addr.fullAddress, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }
@@ -433,7 +433,7 @@ private fun CustomerUtilitySectionContent(
                         var newFull by remember { mutableStateOf("") }
                         Glass3DCard(cornerRadius = 22.dp) {
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("Add New Saved Address", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text("Add New Saved Address", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 OutlinedTextField(value = newLabel, onValueChange = { newLabel = it }, label = { Text("Label (e.g., Gym, Studio)") }, modifier = Modifier.fillMaxWidth())
                                 OutlinedTextField(value = newFull, onValueChange = { newFull = it }, label = { Text("Complete Address") }, modifier = Modifier.fillMaxWidth())
                                 GradientPillButton("Save Address", {
@@ -449,25 +449,25 @@ private fun CustomerUtilitySectionContent(
                 CustomerSection.MY_FAVOURITES -> {
                     val favRests = state.restaurants.filter { it.isFavourite }
                     val favGroc = state.groceryProducts.filter { it.isWishlisted }
-                    item { Text("Favourite Restaurants (${favRests.size})", style = MaterialTheme.typography.titleMedium, color = DarkNavy) }
+                    item { Text("Favourite Restaurants (${favRests.size})", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface) }
                     items(favRests) { r ->
                         Glass3DCard(cornerRadius = 18.dp, onClick = { viewModel.navigateTo(AppRoute.Food) }) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                 Column {
-                                    Text(r.name, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
-                                    Text("${r.cuisine} • ★ ${r.rating}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                    Text(r.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                                    Text("${r.cuisine} • ★ ${r.rating}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                                 StatusPill("Order", PremiumPink)
                             }
                         }
                     }
-                    item { Text("Wishlisted Groceries (${favGroc.size})", style = MaterialTheme.typography.titleMedium, color = DarkNavy) }
+                    item { Text("Wishlisted Groceries (${favGroc.size})", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface) }
                     items(favGroc) { g ->
                         Glass3DCard(cornerRadius = 18.dp, onClick = { viewModel.navigateTo(AppRoute.Grocery) }) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                 Column {
-                                    Text(g.name, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
-                                    Text("${g.unit} • ₹${g.price}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                    Text(g.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                                    Text("${g.unit} • ₹${g.price}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                                 StatusPill("Shop", SkyBlue)
                             }
@@ -483,8 +483,8 @@ private fun CustomerUtilitySectionContent(
                                     StatusPill(rev.serviceType.label, SkyBlue)
                                     Text("★".repeat(rev.rating), color = AmberWarning)
                                 }
-                                Text(rev.targetName, style = MaterialTheme.typography.titleSmall, color = DarkNavy)
-                                Text(rev.comment, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text(rev.targetName, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                                Text(rev.comment, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }
@@ -519,15 +519,15 @@ private fun CustomerUtilitySectionContent(
                         Glass3DCard(cornerRadius = 22.dp) {
                             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                    Text("Push Order Notifications", style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                                    Text("Push Order Notifications", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                                     Switch(checked = pushAlerts, onCheckedChange = { pushAlerts = it })
                                 }
                                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                    Text("Home Live Activity Card", style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                                    Text("Home Live Activity Card", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                                     Switch(checked = liveActivities, onCheckedChange = { liveActivities = it })
                                 }
                                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                    Text("Auto-share Ride Tracking with Family", style = MaterialTheme.typography.bodyMedium, color = DarkNavy)
+                                    Text("Auto-share Ride Tracking with Family", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                                     Switch(checked = safeRideShare, onCheckedChange = { safeRideShare = it })
                                 }
                             }
@@ -539,8 +539,8 @@ private fun CustomerUtilitySectionContent(
                     item {
                         Glass3DCard(cornerRadius = 22.dp) {
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("Family Profiles & Shared Wallet", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
-                                Text("Book rides, groceries, or meals for family members with dedicated saved addresses.", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text("Family Profiles & Shared Wallet", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
+                                Text("Book rides, groceries, or meals for family members with dedicated saved addresses.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 GlassChip(
                                     text = "Personal (${state.profile.name})",
                                     selected = state.activeFamilyMemberId == null,
@@ -557,8 +557,8 @@ private fun CustomerUtilitySectionContent(
                         ) {
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 Column(Modifier.weight(1f)) {
-                                    Text("${member.name} (${member.relation})", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                                    Text(member.savedAddress, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                    Text("${member.name} (${member.relation})", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                                    Text(member.savedAddress, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     Text("Monthly Limit: ₹${member.monthlyLimit}", style = MaterialTheme.typography.labelSmall, color = PremiumPink)
                                 }
                                 StatusPill(if (active) "ACTIVE" else "SWITCH", if (active) EmeraldSuccess else SkyBlue)
@@ -571,7 +571,7 @@ private fun CustomerUtilitySectionContent(
                         var fAddr by remember { mutableStateOf("") }
                         Glass3DCard(cornerRadius = 22.dp) {
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("Add Family Member", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text("Add Family Member", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 OutlinedTextField(value = fName, onValueChange = { fName = it }, label = { Text("Member Name") }, modifier = Modifier.fillMaxWidth())
                                 OutlinedTextField(value = fRel, onValueChange = { fRel = it }, label = { Text("Relation") }, modifier = Modifier.fillMaxWidth())
                                 OutlinedTextField(value = fAddr, onValueChange = { fAddr = it }, label = { Text("Saved Address") }, modifier = Modifier.fillMaxWidth())
@@ -604,7 +604,7 @@ private fun CustomerUtilitySectionContent(
                     item {
                         Glass3DCard(cornerRadius = 22.dp) {
                             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                Text("Bulk Dispatch Quick Actions", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text("Bulk Dispatch Quick Actions", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 GradientPillButton(
                                     text = "Book Bulk Parcel Dispatch",
                                     onClick = { viewModel.navigateTo(AppRoute.Parcel) },

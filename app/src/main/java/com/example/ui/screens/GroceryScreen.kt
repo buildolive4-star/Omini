@@ -134,8 +134,8 @@ fun GroceryScreen(
                         singleLine = true,
                         shape = RoundedCornerShape(18.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = GlassWhiteHigh,
-                            unfocusedContainerColor = GlassWhiteHigh
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -219,7 +219,7 @@ fun GroceryScreen(
                             Spacer(Modifier.width(12.dp))
                             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(prod.name, style = MaterialTheme.typography.titleSmall, color = DarkNavy, modifier = Modifier.weight(1f))
+                                    Text(prod.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
                                     IconButton(
                                         onClick = { viewModel.toggleGroceryWishlist(prod.id) },
                                         modifier = Modifier.size(30.dp)
@@ -232,13 +232,13 @@ fun GroceryScreen(
                                         )
                                     }
                                 }
-                                Text("${prod.unit} • ${prod.shopName}", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text("${prod.unit} • ${prod.shopName}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Text("₹${prod.price}", style = MaterialTheme.typography.titleMedium, color = DarkNavy, fontWeight = FontWeight.ExtraBold)
+                                    Text("₹${prod.price}", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold)
                                     Text(
                                         text = "₹${prod.mrp}",
                                         style = MaterialTheme.typography.bodySmall.copy(textDecoration = TextDecoration.LineThrough),
-                                        color = MutedNavy
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     StatusPill(
                                         text = if (prod.stock > 0) "In Stock (${prod.stock})" else "Out of Stock",
@@ -250,7 +250,7 @@ fun GroceryScreen(
                             if (qty == 0) {
                                 Surface(
                                     shape = RoundedCornerShape(14.dp),
-                                    color = PaleSky,
+                                    color = MaterialTheme.colorScheme.primaryContainer,
                                     border = BorderStroke(1.dp, SkyBlue),
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(14.dp))
@@ -262,7 +262,7 @@ fun GroceryScreen(
                                     Text(
                                         text = "+ ADD",
                                         style = MaterialTheme.typography.labelMedium,
-                                        color = DarkNavy,
+                                        color = MaterialTheme.colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
                                     )

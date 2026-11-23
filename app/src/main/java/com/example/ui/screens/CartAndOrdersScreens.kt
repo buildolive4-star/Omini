@@ -109,11 +109,11 @@ fun MultiServiceCartScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(Icons.Default.ShoppingCart, null, tint = SkyBlue, modifier = Modifier.size(52.dp))
-                        Text("Your Multi-Service Cart is Empty", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                        Text("Your Multi-Service Cart is Empty", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                         Text(
                             "Mix restaurant dishes and daily grocery essentials into a single delivery checkout.",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MutedNavy
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             GradientPillButton("Browse Food", { viewModel.navigateTo(AppRoute.Food) }, modifier = Modifier.weight(1f))
@@ -135,13 +135,13 @@ fun MultiServiceCartScreen(
                         ) {
                             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 StatusPill(item.serviceType.label, if (item.serviceType == ServiceType.FOOD) PremiumPink else SkyBlue)
-                                Text(item.title, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text(item.title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                                 Text(
                                     "${item.sourceName}${if (item.customization.isNotBlank()) " • ${item.customization}" else ""}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MutedNavy
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                Text("₹${item.unitPrice * item.quantity}", style = MaterialTheme.typography.titleSmall, color = DarkNavy)
+                                Text("₹${item.unitPrice * item.quantity}", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
                             }
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -174,7 +174,7 @@ fun MultiServiceCartScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.ConfirmationNumber, null, tint = PremiumPink)
                                 Spacer(Modifier.width(8.dp))
-                                Text("Apply Promo Coupon", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                Text("Apply Promo Coupon", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                             }
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -215,10 +215,10 @@ fun MultiServiceCartScreen(
                 item {
                     Glass3DCard(cornerRadius = 22.dp) {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text("Delivery Address", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                            Text(state.profile.currentLocation, style = MaterialTheme.typography.bodyMedium, color = MutedNavy)
+                            Text("Delivery Address", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                            Text(state.profile.currentLocation, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             HorizontalDivider(color = PaleSky)
-                            Text("Payment Method", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Payment Method", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 items(listOf("SkyPulse Wallet", "UPI", "Card •••• 4092", "Net Banking", "Cash on Delivery")) { mode ->
                                     GlassChip(
@@ -236,7 +236,7 @@ fun MultiServiceCartScreen(
                 item {
                     Glass3DCard(cornerRadius = 22.dp) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("Bill Breakdown", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                            Text("Bill Breakdown", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                             BillRow("Items Subtotal", "₹$subtotal")
                             BillRow("Unified Delivery Fee", "₹$deliveryFee")
                             BillRow("GST & Platform Taxes (5%)", "₹$taxes")
@@ -248,7 +248,7 @@ fun MultiServiceCartScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Grand Total", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
+                                Text("Grand Total", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
                                 Text("₹$grandTotal", style = MaterialTheme.typography.headlineSmall, color = PremiumPink, fontWeight = FontWeight.ExtraBold)
                             }
                             Spacer(Modifier.height(6.dp))
@@ -304,8 +304,8 @@ fun OrdersHubScreen(
             )
         } else {
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-                Text("Orders & Live Tracking", style = MaterialTheme.typography.headlineMedium, color = DarkNavy)
-                Text("Advance live demo tracking or rebook any order in 1 tap", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                Text("Orders & Live Tracking", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface)
+                Text("Advance live demo tracking or rebook any order in 1 tap", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -368,25 +368,25 @@ private fun OrderTrackingCard(
                     StatusPill(order.serviceType.label, SkyBlue)
                     StatusPill(order.status, if (order.isLive) PremiumPink else EmeraldSuccess)
                 }
-                Text("₹${order.amount}", style = MaterialTheme.typography.titleLarge, color = DarkNavy, fontWeight = FontWeight.ExtraBold)
+                Text("₹${order.amount}", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.ExtraBold)
             }
 
             Column {
-                Text(order.title, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                Text(order.subtitle, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
-                Text("${order.id} • ${order.timestamp} • ${order.paymentMethod}", style = MaterialTheme.typography.labelSmall, color = MutedNavy)
+                Text(order.title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                Text(order.subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("${order.id} • ${order.timestamp} • ${order.paymentMethod}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
             if (order.pickupOtp.isNotBlank() || order.deliveryOtp.isNotBlank()) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (order.pickupOtp.isNotBlank()) {
-                        Surface(shape = RoundedCornerShape(10.dp), color = PaleSky) {
-                            Text("Pickup OTP: ${order.pickupOtp}", style = MaterialTheme.typography.labelSmall, color = DarkNavy, modifier = Modifier.padding(8.dp))
+                        Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.primaryContainer) {
+                            Text("Pickup OTP: ${order.pickupOtp}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(8.dp))
                         }
                     }
                     if (order.deliveryOtp.isNotBlank()) {
-                        Surface(shape = RoundedCornerShape(10.dp), color = PalePink) {
-                            Text("Delivery OTP: ${order.deliveryOtp}", style = MaterialTheme.typography.labelSmall, color = DarkNavy, modifier = Modifier.padding(8.dp))
+                        Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.secondaryContainer) {
+                            Text("Delivery OTP: ${order.deliveryOtp}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.padding(8.dp))
                         }
                     }
                 }

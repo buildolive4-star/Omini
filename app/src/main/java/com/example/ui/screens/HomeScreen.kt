@@ -1,7 +1,6 @@
 package com.example.ui.screens
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -33,14 +32,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.BusinessCenter
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DirectionsBike
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Mic
@@ -90,11 +92,16 @@ import com.example.ui.theme.CardIndigoSkyGradient
 import com.example.ui.theme.CardMintSkyGradient
 import com.example.ui.theme.CardPinkGradient
 import com.example.ui.theme.CardSkyGradient
+import com.example.ui.theme.CyberCyan
 import com.example.ui.theme.DarkNavy
+import com.example.ui.theme.ElectricPink
 import com.example.ui.theme.EmeraldSuccess
+import com.example.ui.theme.GlassDarkHigh
 import com.example.ui.theme.GlassWhiteHigh
 import com.example.ui.theme.LightPink
 import com.example.ui.theme.LightSkyBlue
+import com.example.ui.theme.LocalIsDarkGlass
+import com.example.ui.theme.MutedLightBlue
 import com.example.ui.theme.MutedNavy
 import com.example.ui.theme.NavyGlowBrush
 import com.example.ui.theme.PalePink
@@ -108,6 +115,7 @@ import com.example.viewmodel.SuperAppViewModel
 
 private data class HomeServiceSpec(
     val id: String,
+    val tag: String,
     val title: String,
     val subtitle: String,
     val options: List<String>,
@@ -124,6 +132,11 @@ fun HomeScreen(
     onOpenDrawer: () -> Unit,
     onVoiceSearchClick: () -> Unit
 ) {
+    val isDark = LocalIsDarkGlass.current
+    val primaryText = if (isDark) PureWhite else DarkNavy
+    val secondaryText = if (isDark) MutedLightBlue else MutedNavy
+    val pillBg = if (isDark) GlassDarkHigh else GlassWhiteHigh
+
     var showLocationDialog by remember { mutableStateOf(false) }
     var showNotificationsDialog by remember { mutableStateOf(false) }
 
@@ -131,6 +144,7 @@ fun HomeScreen(
         listOf(
             HomeServiceSpec(
                 id = "ride",
+                tag = "2-MIN PICKUP",
                 title = "Ride",
                 subtitle = "Travel anywhere, anytime.",
                 options = listOf("Bike Taxi", "Auto", "Mini Cab", "Sedan", "SUV"),
@@ -141,6 +155,7 @@ fun HomeScreen(
             ),
             HomeServiceSpec(
                 id = "food",
+                tag = "HOT & FRESH",
                 title = "Food Delivery",
                 subtitle = "Delicious food at your doorstep.",
                 options = listOf("Restaurants", "Fast Food", "Pizza", "Biryani", "Desserts"),
@@ -151,6 +166,7 @@ fun HomeScreen(
             ),
             HomeServiceSpec(
                 id = "grocery",
+                tag = "15-MIN EXPRESS",
                 title = "Grocery",
                 subtitle = "Daily essentials delivered.",
                 options = listOf("Vegetables", "Fruits", "Dairy", "Snacks", "Household"),
@@ -161,6 +177,7 @@ fun HomeScreen(
             ),
             HomeServiceSpec(
                 id = "parcel",
+                tag = "INSURED • OTP",
                 title = "Send Parcel",
                 subtitle = "Send anything safely.",
                 options = listOf("Documents", "Small Packages", "Gifts", "Business Parcels"),
@@ -171,6 +188,7 @@ fun HomeScreen(
             ),
             HomeServiceSpec(
                 id = "transport",
+                tag = "MINI TO 19FT TRUCK",
                 title = "Transport",
                 subtitle = "Move your goods easily.",
                 options = listOf("Two Wheeler", "Three Wheeler", "Tata Ace", "Pickup", "Mini Truck", "Large Truck"),
@@ -194,22 +212,21 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .testTag("home_screen"),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 112.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 116.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // 1. TOP HEADER: Hamburger + Brand + Greeting + Avatar + Right Utilities
+        // 1. ULTRA-POLISHED 3D GLASS TOP HEADER
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Left: Hamburger + Logo + Greeting
                     Surface(
                         shape = RoundedCornerShape(16.dp),
-                        color = GlassWhiteHigh,
-                        border = BorderStroke(1.2.dp, SkyBlue.copy(alpha = 0.55f)),
-                        shadowElevation = 6.dp
+                        color = pillBg,
+                        border = BorderStroke(1.3.dp, SkyToPinkBrush),
+                        shadowElevation = 8.dp
                     ) {
                         IconButton(
                             onClick = onOpenDrawer,
@@ -220,7 +237,7 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.Default.Menu,
                                 contentDescription = "Open Navigation Menu",
-                                tint = DarkNavy
+                                tint = primaryText
                             )
                         }
                     }
@@ -232,9 +249,10 @@ fun HomeScreen(
                         contentDescription = "SkyPulse Logo",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .border(1.2.dp, PremiumPink, RoundedCornerShape(12.dp))
+                            .size(42.dp)
+                            .shadow(8.dp, RoundedCornerShape(13.dp), spotColor = ElectricPink)
+                            .clip(RoundedCornerShape(13.dp))
+                            .border(1.4.dp, SkyToPinkBrush, RoundedCornerShape(13.dp))
                     )
 
                     Spacer(Modifier.width(8.dp))
@@ -243,38 +261,35 @@ fun HomeScreen(
                         Text(
                             text = "SkyPulse",
                             style = MaterialTheme.typography.titleLarge,
-                            color = DarkNavy,
+                            color = primaryText,
                             fontWeight = FontWeight.ExtraBold
                         )
                         Text(
                             text = "Hello, Welcome!",
                             style = MaterialTheme.typography.labelSmall,
                             color = PremiumPink,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.ExtraBold
                         )
                     }
 
-                    // Right: Wallet Balance, Notifications, Cart, Profile Avatar
+                    // 1-Tap Pearl Light / Cyber Midnight Glass Theme Toggle
                     Surface(
-                        shape = RoundedCornerShape(50),
-                        color = GlassWhiteHigh,
-                        border = BorderStroke(1.dp, SkyBlue.copy(alpha = 0.5f)),
+                        shape = CircleShape,
+                        color = pillBg,
+                        border = BorderStroke(1.2.dp, SkyBlue.copy(alpha = 0.65f)),
+                        shadowElevation = 6.dp,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(50))
-                            .clickable { viewModel.navigateTo(AppRoute.Wallet) }
-                            .testTag("header_wallet_chip")
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .clickable { viewModel.toggleDarkGlassTheme() }
+                            .testTag("theme_toggle_button")
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(Icons.Default.AccountBalanceWallet, null, tint = SkyBlue, modifier = Modifier.size(14.dp))
-                            Spacer(Modifier.width(4.dp))
-                            Text(
-                                text = "₹${state.walletBalance}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = DarkNavy,
-                                fontWeight = FontWeight.ExtraBold
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = if (isDark) Icons.Default.LightMode else Icons.Default.DarkMode,
+                                contentDescription = "Toggle 3D Glass Theme",
+                                tint = if (isDark) CyberCyan else PremiumPink,
+                                modifier = Modifier.size(19.dp)
                             )
                         }
                     }
@@ -284,8 +299,9 @@ fun HomeScreen(
                     Box {
                         Surface(
                             shape = CircleShape,
-                            color = GlassWhiteHigh,
-                            border = BorderStroke(1.dp, LightPink),
+                            color = pillBg,
+                            border = BorderStroke(1.2.dp, LightPink),
+                            shadowElevation = 6.dp,
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
@@ -296,7 +312,7 @@ fun HomeScreen(
                                 .testTag("header_notification_button")
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                Icon(Icons.Default.Notifications, "Notifications", tint = DarkNavy, modifier = Modifier.size(20.dp))
+                                Icon(Icons.Default.Notifications, "Notifications", tint = primaryText, modifier = Modifier.size(19.dp))
                             }
                         }
                         if (state.unreadNotificationsCount > 0) {
@@ -305,7 +321,7 @@ fun HomeScreen(
                                     .align(Alignment.TopEnd)
                                     .size(16.dp)
                                     .clip(CircleShape)
-                                    .background(PremiumPink),
+                                    .background(ElectricPink),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
@@ -322,10 +338,12 @@ fun HomeScreen(
                     Box {
                         Surface(
                             shape = CircleShape,
-                            color = DarkNavy,
+                            color = Color.Transparent,
+                            shadowElevation = 8.dp,
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
+                                .background(SkyToPinkBrush)
                                 .clickable { viewModel.navigateTo(AppRoute.MultiCart) }
                                 .testTag("header_cart_button")
                         ) {
@@ -339,23 +357,24 @@ fun HomeScreen(
                                     .align(Alignment.TopEnd)
                                     .size(17.dp)
                                     .clip(CircleShape)
-                                    .background(SkyBlue),
+                                    .background(DarkNavy)
+                                    .border(1.dp, PureWhite, CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = "${state.totalCartItemsCount}",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = DarkNavy,
-                                    fontWeight = FontWeight.Bold
+                                    color = CyberCyan,
+                                    fontWeight = FontWeight.ExtraBold
                                 )
                             }
                         }
                     }
                 }
 
-                // Location Selector Bar + Avatar
+                // Location + Wallet Glass Pill Bar
                 Glass3DCard(
-                    cornerRadius = 18.dp,
+                    cornerRadius = 22.dp,
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
                     onClick = { showLocationDialog = true }
                 ) {
@@ -367,12 +386,13 @@ fun HomeScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(34.dp)
+                                .size(38.dp)
+                                .shadow(6.dp, CircleShape, spotColor = ElectricPink)
                                 .clip(CircleShape)
                                 .background(SkyToPinkBrush),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(Icons.Default.MyLocation, "Detect Location", tint = PureWhite, modifier = Modifier.size(18.dp))
+                            Icon(Icons.Default.MyLocation, "Detect Location", tint = PureWhite, modifier = Modifier.size(19.dp))
                         }
                         Spacer(Modifier.width(10.dp))
                         Column(modifier = Modifier.weight(1f)) {
@@ -380,47 +400,60 @@ fun HomeScreen(
                                 text = "CURRENT LOCATION • TAP TO CHANGE",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = SkyBlue,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.ExtraBold
                             )
                             Text(
                                 text = state.profile.currentLocation,
                                 style = MaterialTheme.typography.titleSmall,
-                                color = DarkNavy,
+                                color = primaryText,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
-                        Icon(Icons.Default.KeyboardArrowDown, null, tint = MutedNavy)
-                        Spacer(Modifier.width(8.dp))
-                        Box(
+                        Icon(Icons.Default.KeyboardArrowDown, null, tint = secondaryText)
+                        Spacer(Modifier.width(6.dp))
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = if (isDark) Color(0xFF1A3264) else PaleSky,
+                            border = BorderStroke(1.dp, SkyBlue.copy(alpha = 0.6f)),
                             modifier = Modifier
-                                .size(34.dp)
-                                .clip(CircleShape)
-                                .background(PalePink)
-                                .border(1.dp, PremiumPink, CircleShape)
-                                .clickable { viewModel.navigateTo(AppRoute.Profile) },
-                            contentAlignment = Alignment.Center
+                                .clip(RoundedCornerShape(50))
+                                .clickable { viewModel.navigateTo(AppRoute.Wallet) }
+                                .testTag("header_wallet_chip")
                         ) {
-                            Text(
-                                text = state.profile.avatarInitials,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = DarkNavy,
-                                fontWeight = FontWeight.ExtraBold
-                            )
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Default.AccountBalanceWallet, null, tint = SkyBlue, modifier = Modifier.size(14.dp))
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    text = "₹${state.walletBalance}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = primaryText,
+                                    fontWeight = FontWeight.ExtraBold
+                                )
+                            }
                         }
                     }
                 }
 
-                // Search Bar + Voice Search + Gemini AI Button
+                // Glowing Glass Search Bar + Voice Search + Gemini AI Sparkle Button
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     OutlinedTextField(
                         value = state.globalSearchQuery,
                         onValueChange = viewModel::updateSearchQuery,
-                        placeholder = { Text("Search rides, pizza, milk, parcel…", style = MaterialTheme.typography.bodyMedium) },
+                        placeholder = {
+                            Text(
+                                "Search rides, pizza, milk, parcel…",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = secondaryText
+                            )
+                        },
                         leadingIcon = { Icon(Icons.Default.Search, null, tint = SkyBlue) },
                         trailingIcon = {
                             IconButton(
@@ -431,12 +464,14 @@ fun HomeScreen(
                             }
                         },
                         singleLine = true,
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(22.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = GlassWhiteHigh,
-                            unfocusedContainerColor = GlassWhiteHigh,
+                            focusedContainerColor = pillBg,
+                            unfocusedContainerColor = pillBg,
+                            focusedTextColor = primaryText,
+                            unfocusedTextColor = primaryText,
                             focusedBorderColor = SkyBlue,
-                            unfocusedBorderColor = LightSkyBlue.copy(alpha = 0.6f)
+                            unfocusedBorderColor = SkyBlue.copy(alpha = 0.45f)
                         ),
                         modifier = Modifier
                             .weight(1f)
@@ -444,30 +479,39 @@ fun HomeScreen(
                     )
 
                     Surface(
-                        shape = RoundedCornerShape(18.dp),
+                        shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent,
                         modifier = Modifier
-                            .size(54.dp)
-                            .shadow(8.dp, RoundedCornerShape(18.dp), spotColor = PremiumPink)
-                            .clip(RoundedCornerShape(18.dp))
+                            .size(56.dp)
+                            .shadow(12.dp, RoundedCornerShape(20.dp), spotColor = ElectricPink, ambientColor = SkyBlue)
+                            .clip(RoundedCornerShape(20.dp))
                             .background(SkyToPinkBrush)
+                            .border(1.4.dp, PureWhite.copy(alpha = 0.7f), RoundedCornerShape(20.dp))
                             .clickable { viewModel.navigateTo(AppRoute.AiAssistant) }
                             .testTag("home_ai_button")
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(Icons.Default.AutoAwesome, "SkyPulse Gemini AI", tint = PureWhite, modifier = Modifier.size(26.dp))
+                            Icon(Icons.Default.AutoAwesome, "SkyPulse Gemini AI", tint = PureWhite, modifier = Modifier.size(27.dp))
                         }
                     }
                 }
             }
         }
 
-        // 2. EXTRA PREMIUM FEATURE #5: LIVE ACTIVITY CARD ON HOME SCREEN
+        // 2. LIVE ACTIVITY CARD WITH PULSING RADAR BEACON
         state.liveOrder?.let { live ->
             item {
+                val beaconInfinite = rememberInfiniteTransition(label = "live_beacon")
+                val beaconAlpha by beaconInfinite.animateFloat(
+                    initialValue = 0.35f,
+                    targetValue = 1f,
+                    animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
+                    label = "beacon_alpha"
+                )
                 Glass3DCard(
                     gradientBrush = NavyGlowBrush,
-                    cornerRadius = 24.dp,
+                    cornerRadius = 26.dp,
+                    elevation = 16.dp,
                     onClick = { viewModel.navigateTo(AppRoute.Orders) }
                 ) {
                     Column(
@@ -481,18 +525,27 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            StatusPill("LIVE ACTIVITY • ${live.serviceType.label.uppercase()}", EmeraldSuccess)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(10.dp)
+                                        .clip(CircleShape)
+                                        .background(EmeraldSuccess.copy(alpha = beaconAlpha))
+                                )
+                                StatusPill("LIVE • ${live.serviceType.label.uppercase()}", EmeraldSuccess)
+                            }
                             Text(
                                 text = live.etaText,
                                 style = MaterialTheme.typography.labelMedium,
-                                color = LightSkyBlue,
-                                fontWeight = FontWeight.Bold
+                                color = CyberCyan,
+                                fontWeight = FontWeight.ExtraBold
                             )
                         }
                         Text(
                             text = live.title,
                             style = MaterialTheme.typography.titleLarge,
-                            color = PureWhite
+                            color = PureWhite,
+                            fontWeight = FontWeight.ExtraBold
                         )
                         Text(
                             text = "${live.status} • ${live.subtitle}",
@@ -502,12 +555,12 @@ fun HomeScreen(
                             overflow = TextOverflow.Ellipsis
                         )
                         LinearProgressIndicator(
-                            progress = { (live.statusStep.toFloat() / live.totalSteps.coerceAtLeast(1)).coerceIn(0.1f, 1f) },
+                            progress = { (live.statusStep.toFloat() / live.totalSteps.coerceAtLeast(1)).coerceIn(0.12f, 1f) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(7.dp)
+                                .height(8.dp)
                                 .clip(CircleShape),
-                            color = SkyBlue,
+                            color = CyberCyan,
                             trackColor = PureWhite.copy(alpha = 0.2f)
                         )
                     }
@@ -515,34 +568,35 @@ fun HomeScreen(
             }
         }
 
-        // 3. PROMO BANNER FROM ADMIN CONFIG
+        // 3. LUMINOUS PROMO RIBBON
         item {
             Surface(
-                shape = RoundedCornerShape(18.dp),
-                color = PalePink.copy(alpha = 0.85f),
-                border = BorderStroke(1.dp, PremiumPink.copy(alpha = 0.5f)),
+                shape = RoundedCornerShape(20.dp),
+                color = if (isDark) Color(0x993E1448) else PalePink.copy(alpha = 0.9f),
+                border = BorderStroke(1.2.dp, SkyToPinkBrush),
+                shadowElevation = 6.dp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { viewModel.navigateTo(AppRoute.MultiCart) }
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 11.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.AutoAwesome, null, tint = PremiumPink, modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.AutoAwesome, null, tint = ElectricPink, modifier = Modifier.size(19.dp))
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = state.adminConfig.bannerHeadline,
                         style = MaterialTheme.typography.labelMedium,
-                        color = DarkNavy,
-                        fontWeight = FontWeight.Bold,
+                        color = primaryText,
+                        fontWeight = FontWeight.ExtraBold,
                         modifier = Modifier.weight(1f)
                     )
                 }
             }
         }
 
-        // 4. SECTION TITLE + 5 LARGE ANIMATED 3D SERVICE CARDS
+        // 4. 5 LARGE ULTRA-3D ANIMATED SERVICE CARDS
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -553,13 +607,13 @@ fun HomeScreen(
                     Text(
                         text = "All Services in One Super App",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = DarkNavy,
+                        color = primaryText,
                         fontWeight = FontWeight.ExtraBold
                     )
                     Text(
-                        text = "Tap any 3D module to launch live booking",
+                        text = "Sky Blue + Pink 3D Glass Experience",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MutedNavy
+                        color = secondaryText
                     )
                 }
                 StatusPill("5 MODULES", SkyBlue)
@@ -573,19 +627,20 @@ fun HomeScreen(
             )
         }
 
-        // 5. EXTRA PREMIUM FEATURE #1: ONE-TAP REBOOKING STRIP
+        // 5. ONE-TAP REBOOKING STRIP
         item {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
                     text = "One-Tap Rebooking",
                     style = MaterialTheme.typography.titleLarge,
-                    color = DarkNavy
+                    color = primaryText,
+                    fontWeight = FontWeight.ExtraBold
                 )
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(state.orders.take(4), key = { "rebook_${it.id}" }) { order ->
                         Glass3DCard(
-                            modifier = Modifier.width(230.dp),
-                            cornerRadius = 20.dp,
+                            modifier = Modifier.width(236.dp),
+                            cornerRadius = 22.dp,
                             contentPadding = PaddingValues(14.dp)
                         ) {
                             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -595,19 +650,19 @@ fun HomeScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     StatusPill(order.serviceType.label, SkyBlue)
-                                    Text("₹${order.amount}", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                    Text("₹${order.amount}", style = MaterialTheme.typography.titleMedium, color = primaryText, fontWeight = FontWeight.ExtraBold)
                                 }
                                 Text(
                                     text = order.title,
                                     style = MaterialTheme.typography.titleSmall,
-                                    color = DarkNavy,
+                                    color = primaryText,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
                                     text = order.subtitle,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MutedNavy,
+                                    color = secondaryText,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
@@ -626,7 +681,7 @@ fun HomeScreen(
             }
         }
 
-        // 6. EXTRA PREMIUM FEATURES #3 & #4: FAMILY ACCOUNT & BUSINESS ACCOUNT QUICK ACCESS
+        // 6. FAMILY & BUSINESS QUICK CARDS
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -634,43 +689,42 @@ fun HomeScreen(
             ) {
                 Glass3DCard(
                     modifier = Modifier.weight(1f),
-                    cornerRadius = 22.dp,
+                    cornerRadius = 24.dp,
                     onClick = { viewModel.navigateTo(AppRoute.CustomerDetail(CustomerSection.FAMILY_ACCOUNT)) }
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Icon(Icons.Default.Groups, null, tint = SkyBlue, modifier = Modifier.size(28.dp))
-                        Text("Family Account", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                        Icon(Icons.Default.Groups, null, tint = SkyBlue, modifier = Modifier.size(30.dp))
+                        Text("Family Account", style = MaterialTheme.typography.titleMedium, color = primaryText)
                         Text(
                             "${state.familyMembers.size} profiles & saved addresses",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MutedNavy
+                            color = secondaryText
                         )
                     }
                 }
                 Glass3DCard(
                     modifier = Modifier.weight(1f),
-                    cornerRadius = 22.dp,
+                    cornerRadius = 24.dp,
                     onClick = { viewModel.navigateTo(AppRoute.CustomerDetail(CustomerSection.BUSINESS_DASHBOARD)) }
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Icon(Icons.Default.BusinessCenter, null, tint = PremiumPink, modifier = Modifier.size(28.dp))
-                        Text("Business B2B", style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                        Icon(Icons.Default.BusinessCenter, null, tint = PremiumPink, modifier = Modifier.size(30.dp))
+                        Text("Business B2B", style = MaterialTheme.typography.titleMedium, color = primaryText)
                         Text(
                             "Bulk parcel & truck booking",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MutedNavy
+                            color = secondaryText
                         )
                     }
                 }
             }
         }
 
-        // 7. PROTOTYPE DISCLAIMER FOOTER
         item {
             Text(
                 text = "Interactive Super App Prototype • Simulated bookings, payments & live tracking. AI powered by Gemini.",
                 style = MaterialTheme.typography.bodySmall,
-                color = MutedNavy,
+                color = secondaryText,
                 modifier = Modifier.padding(horizontal = 4.dp)
             )
         }
@@ -746,26 +800,35 @@ private fun Animated3DServiceCard(
 ) {
     val infinite = rememberInfiniteTransition(label = "float_${spec.id}")
     val floatY by infinite.animateFloat(
-        initialValue = -3f,
-        targetValue = 3f,
+        initialValue = -4.5f,
+        targetValue = 4.5f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2600, easing = FastOutSlowInEasing),
+            animation = tween(2500, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "float_y"
+    )
+    val tiltZ by infinite.animateFloat(
+        initialValue = -1.6f,
+        targetValue = 1.6f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "float_tilt"
     )
 
     Glass3DCard(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("service_card_${spec.id}"),
-        cornerRadius = 28.dp,
+        cornerRadius = 30.dp,
         gradientBrush = spec.gradient,
-        elevation = 14.dp,
+        elevation = 18.dp,
         onClick = onClick,
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(18.dp)
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -773,10 +836,11 @@ private fun Animated3DServiceCard(
                 Column(modifier = Modifier.weight(1.15f)) {
                     Surface(
                         shape = CircleShape,
-                        color = PureWhite.copy(alpha = 0.28f)
+                        color = PureWhite.copy(alpha = 0.24f),
+                        border = BorderStroke(1.dp, PureWhite.copy(alpha = 0.55f))
                     ) {
                         Text(
-                            text = "3D HYPERLOCAL",
+                            text = spec.tag,
                             style = MaterialTheme.typography.labelSmall,
                             color = PureWhite,
                             fontWeight = FontWeight.ExtraBold,
@@ -786,7 +850,7 @@ private fun Animated3DServiceCard(
                     Spacer(Modifier.height(8.dp))
                     Text(
                         text = spec.title,
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.headlineLarge,
                         color = PureWhite,
                         fontWeight = FontWeight.ExtraBold
                     )
@@ -794,19 +858,23 @@ private fun Animated3DServiceCard(
                     Text(
                         text = spec.subtitle,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = PureWhite.copy(alpha = 0.92f)
+                        color = PureWhite.copy(alpha = 0.94f)
                     )
                 }
 
-                Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.width(12.dp))
 
+                // Floating 3D artwork with luminous white halo ring
                 Box(
                     modifier = Modifier
-                        .size(width = 128.dp, height = 98.dp)
-                        .graphicsLayer { translationY = floatY }
-                        .shadow(12.dp, RoundedCornerShape(22.dp))
-                        .clip(RoundedCornerShape(22.dp))
-                        .border(2.dp, PureWhite.copy(alpha = 0.85f), RoundedCornerShape(22.dp))
+                        .size(width = 136.dp, height = 106.dp)
+                        .graphicsLayer {
+                            translationY = floatY
+                            rotationZ = tiltZ
+                        }
+                        .shadow(16.dp, RoundedCornerShape(24.dp), spotColor = DarkNavy)
+                        .clip(RoundedCornerShape(24.dp))
+                        .border(2.2.dp, PureWhite.copy(alpha = 0.92f), RoundedCornerShape(24.dp))
                 ) {
                     Image(
                         painter = painterResource(id = spec.imageRes),
@@ -817,7 +885,7 @@ private fun Animated3DServiceCard(
                 }
             }
 
-            // Options horizontal chips
+            // Frosted Glass Sub-option Chips
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -827,39 +895,59 @@ private fun Animated3DServiceCard(
                 spec.options.forEach { opt ->
                     Surface(
                         shape = CircleShape,
-                        color = PureWhite.copy(alpha = 0.24f),
-                        border = BorderStroke(1.dp, PureWhite.copy(alpha = 0.45f))
+                        color = DarkNavy.copy(alpha = 0.22f),
+                        border = BorderStroke(1.dp, PureWhite.copy(alpha = 0.5f))
                     ) {
                         Text(
                             text = opt,
                             style = MaterialTheme.typography.labelSmall,
                             color = PureWhite,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 11.dp, vertical = 5.dp)
                         )
                     }
                 }
             }
 
-            // Animated CTA Button
+            // Gleaming Glass-White 3D CTA Bar
             Surface(
                 shape = RoundedCornerShape(50),
-                color = PureWhite,
-                shadowElevation = 6.dp,
+                color = PureWhite.copy(alpha = 0.96f),
+                shadowElevation = 10.dp,
+                border = BorderStroke(1.dp, PureWhite),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
+                    .height(50.dp)
                     .clip(RoundedCornerShape(50))
                     .clickable(onClick = onClick)
                     .testTag("cta_${spec.id}")
             ) {
-                Box(contentAlignment = Alignment.Center) {
+                Row(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     Text(
                         text = spec.ctaLabel,
                         style = MaterialTheme.typography.labelLarge,
                         color = DarkNavy,
                         fontWeight = FontWeight.ExtraBold
                     )
+                    Spacer(Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(26.dp)
+                            .clip(CircleShape)
+                            .background(SkyToPinkBrush),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            tint = PureWhite,
+                            modifier = Modifier.size(15.dp)
+                        )
+                    }
                 }
             }
         }
@@ -872,11 +960,15 @@ fun ServicesDirectoryScreen(
     viewModel: SuperAppViewModel,
     onOpenDrawer: () -> Unit
 ) {
+    val isDark = LocalIsDarkGlass.current
+    val primaryText = if (isDark) PureWhite else DarkNavy
+    val secondaryText = if (isDark) MutedLightBlue else MutedNavy
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .testTag("services_screen"),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 112.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 116.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
@@ -886,16 +978,16 @@ fun ServicesDirectoryScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text("All Services & Panels", style = MaterialTheme.typography.headlineMedium, color = DarkNavy)
-                    Text("Unified customer, partner, merchant & admin access", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                    Text("All Services & Panels", style = MaterialTheme.typography.headlineMedium, color = primaryText)
+                    Text("Unified customer, partner, merchant & admin access", style = MaterialTheme.typography.bodySmall, color = secondaryText)
                 }
                 Surface(
                     shape = CircleShape,
-                    color = GlassWhiteHigh,
-                    border = BorderStroke(1.dp, SkyBlue)
+                    color = if (isDark) GlassDarkHigh else GlassWhiteHigh,
+                    border = BorderStroke(1.2.dp, SkyBlue)
                 ) {
                     IconButton(onClick = onOpenDrawer) {
-                        Icon(Icons.Default.Menu, "Open Drawer", tint = DarkNavy)
+                        Icon(Icons.Default.Menu, "Open Drawer", tint = primaryText)
                     }
                 }
             }
@@ -921,14 +1013,14 @@ fun ServicesDirectoryScreen(
                                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Box(
                                         modifier = Modifier
-                                            .size(44.dp)
-                                            .clip(RoundedCornerShape(14.dp))
+                                            .size(46.dp)
+                                            .clip(RoundedCornerShape(15.dp))
                                             .background(SkyToPinkBrush),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(icon, null, tint = PureWhite)
                                     }
-                                    Text(title, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
+                                    Text(title, style = MaterialTheme.typography.titleMedium, color = primaryText)
                                 }
                             }
                         }
@@ -939,8 +1031,8 @@ fun ServicesDirectoryScreen(
 
         item {
             Spacer(Modifier.height(4.dp))
-            Text("Switch Inside-App Role Panels", style = MaterialTheme.typography.titleLarge, color = DarkNavy)
-            Text("Requires role authorization PIN for Partner, Merchant, Business & Admin consoles", style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+            Text("Switch Inside-App Role Panels", style = MaterialTheme.typography.titleLarge, color = primaryText)
+            Text("Requires role authorization PIN for Partner, Merchant, Business & Admin consoles", style = MaterialTheme.typography.bodySmall, color = secondaryText)
         }
 
         item {
@@ -955,15 +1047,15 @@ fun ServicesDirectoryScreen(
                 ).forEach { (title, sub, route) ->
                     Glass3DCard(
                         onClick = { viewModel.navigateTo(route) },
-                        cornerRadius = 20.dp
+                        cornerRadius = 22.dp
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(title, style = MaterialTheme.typography.titleMedium, color = DarkNavy)
-                                Text(sub, style = MaterialTheme.typography.bodySmall, color = MutedNavy)
+                                Text(title, style = MaterialTheme.typography.titleMedium, color = primaryText)
+                                Text(sub, style = MaterialTheme.typography.bodySmall, color = secondaryText)
                             }
                             StatusPill("OPEN", PremiumPink)
                         }
