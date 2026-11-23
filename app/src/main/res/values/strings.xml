@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">SkyPulse</string>
+    <string name="greeting_welcome">Hello, Welcome!</string>
+    <string name="search_placeholder">Search rides, biryani, milk, parcels…</string>
+    <string name="open_drawer_desc">Open navigation menu</string>
+    <string name="notifications_desc">Notifications</string>
+    <string name="cart_desc">Open multi-service cart</string>
+    <string name="voice_search_desc">Voice search</string>
+    <string name="ai_assistant_desc">Open SkyPulse AI Assistant</string>
+    <string name="back_desc">Navigate back</string>
+    <string name="prototype_notice">Interactive Prototype — Simulated bookings, payments &amp; tracking</string>
+</resources>

@@ -1,0 +1,6 @@
+{
+  "name": "SkyPulse",
+  "description": "All-in-One Hyperlocal Super App combining Ride Booking, Food Delivery, Grocery Shopping, Parcel Delivery, Goods Transport, Partner & Merchant Dashboards, Admin Console, and Gemini AI Assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
